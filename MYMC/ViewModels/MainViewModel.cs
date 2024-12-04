@@ -18,6 +18,28 @@ public partial class MainViewModel(ILogger logger) : ObservableObject, IViewMode
     {
         IsPlaying = message.IsPlaying;
     }
+
+    private void TogglePlayback()
+    {
+        if (IsPlaying)
+        {
+            Pause();
+        }
+        else
+        {
+            Play();
+        }
+    }
+    
+    private void Play()
+    {
+        logger.Information("Playing.");
+    }
+    
+    private void Pause()
+    {
+        logger.Information("Pausing.");
+    }
     
     [RelayCommand]
     private void NavigationCompleted()
