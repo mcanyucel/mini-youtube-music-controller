@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.IO;
+using Microsoft.Extensions.DependencyInjection;
 using MYMC.Services.Implementation;
 using MYMC.Services.Interface;
 using MYMC.ViewModels;
 using MYMC.Windows;
 using MYMC.Windows.Factory;
 using Serilog;
-using Serilog.Core;
 
 namespace MYMC.Extensions;
 
@@ -35,6 +35,25 @@ public static class ServiceProviderExtensions
     
     public static ServiceCollection ConfigureLogger(this ServiceCollection services)
     {
+        var logDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "MiniYoutubeMusicController",
+            "logs");
+        
+        if (!Directory.Exists(logDirectory))
+        {
+            Directory.CreateDirectory(logDirectory);
+        }
+
+        var loggerConfiguration = new LoggerConfiguration()
+            .WriteTo.File(Path.Combine(logDirectory, "log-.txt"), rollingInterval: RollingInterval.Day);
+        
+#if DEBUG
+        loggerConfiguration.MinimumLevel.Debug();
+#else
+        loggerConfiguration.MinimumLevel.Error();
+#endif
+        Log.Logger = loggerConfiguration.CreateLogger();
+        Log.Information("Application started.");
         services.AddSingleton(Log.Logger);
         return services;
     }
