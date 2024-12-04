@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MYMC.Models;
 using Serilog;
 
 namespace MYMC.ViewModels;
@@ -7,9 +8,16 @@ namespace MYMC.ViewModels;
 public partial class MainViewModel(ILogger logger) : ObservableObject, IViewModel
 {
     [ObservableProperty]
-    private string _statusText = "Loading Youtube Music Client...";
+    private string _statusText = "Loading client...";
 
     [ObservableProperty] private bool _isBusy = true;
+    
+    [ObservableProperty] private bool _isPlaying;
+    
+    public void PlaybackStateChanged(PlayStateMessage message)
+    {
+        IsPlaying = message.IsPlaying;
+    }
     
     [RelayCommand]
     private void NavigationCompleted()

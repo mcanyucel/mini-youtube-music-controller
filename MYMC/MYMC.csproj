@@ -27,4 +27,11 @@
       <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Scripts\player-state.js" />
+      <Content Include="Scripts\player-state.js">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>

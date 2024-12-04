@@ -7,6 +7,7 @@
                  xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
                  xmlns:viewmodel="clr-namespace:MYMC.ViewModels"
                  xmlns:converters="clr-namespace:MYMC.Converters"
+                 xmlns:iconpacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                  d:DataContext="{d:DesignInstance Type=viewmodel:MainViewModel}"
                  xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
                  Loaded="MainWindow_OnLoaded"
@@ -14,6 +15,7 @@
                  Title="MainWindow" Height="450" Width="800">
     <mah:MetroWindow.Resources>
         <converters:FractionConverter x:Key="FractionConverter"></converters:FractionConverter>
+        <converters:PlaybackStateToIconConverter x:Key="PlaybackStateToIconConverter"></converters:PlaybackStateToIconConverter>
     </mah:MetroWindow.Resources>
     <DockPanel LastChildFill="True">
 
@@ -28,9 +30,22 @@
                                   Visibility="{Binding IsBusy, 
             Converter={StaticResource BooleanToVisibilityConverter}}" />
         </StatusBar>
+        
+        <Grid DockPanel.Dock="Bottom" Height="100">
+            <Button Style="{StaticResource MahApps.Styles.Button.Circle}" Width="48" Height="48">
+                <iconpacks:PackIconMaterial HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <iconpacks:PackIconMaterial.Kind>
+                        <MultiBinding Mode="OneWay" Converter="{StaticResource PlaybackStateToIconConverter}">
+                            <Binding Path="IsBusy" />
+                            <Binding Path="IsPlaying" />
+                        </MultiBinding>
+                    </iconpacks:PackIconMaterial.Kind>
+                </iconpacks:PackIconMaterial>
+            </Button>
+        </Grid>
 
         <Grid DockPanel.Dock="Top">
-            <wv2:WebView2 x:Name="WebView">
+            <wv2:WebView2 x:Name="WebView" NavigationCompleted="WebView_NavigationCompleted">
                 <behaviors:Interaction.Triggers>
                     <behaviors:EventTrigger EventName="NavigationCompleted">
                         <behaviors:InvokeCommandAction Command="{Binding NavigationCompletedCommand}" />
