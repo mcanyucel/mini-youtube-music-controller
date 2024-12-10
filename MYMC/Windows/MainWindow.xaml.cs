@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Text.Json;
 using System.Windows;
@@ -41,8 +42,19 @@ public sealed partial class MainWindow : IDisposable
             case PlayerCommandType.Previous:
                 await Previous();
                 break;
+            case PlayerCommandType.Seek:
+                await SeekToTime(e.Parameter);
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(e), actualValue: e.CommandType, "Unknown command type");
+        }
+    }
+
+    private async Task SeekToTime(object? e)
+    {
+        if (double.TryParse(e?.ToString(), CultureInfo.InvariantCulture, out var time))
+        {
+            await ExecuteScriptAsync($"seekTo({time});");
         }
     }
 
@@ -94,8 +106,6 @@ public sealed partial class MainWindow : IDisposable
     private async void WebView_NavigationCompleted(object _, CoreWebView2NavigationCompletedEventArgs __)
     {
         await InjectScriptFile("player-state.js");
-
-        
     }
 
     private void HandleWebMessage(object? sender, CoreWebView2WebMessageReceivedEventArgs e)
@@ -155,7 +165,6 @@ public sealed partial class MainWindow : IDisposable
             var scriptContent = await File.ReadAllTextAsync(scriptPath);
             Debug.WriteLine("Executing script");
             await WebView.CoreWebView2.ExecuteScriptAsync(scriptContent);
-
     }
 
     private readonly string _scriptsPath;

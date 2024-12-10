@@ -177,3 +177,12 @@ function initializeObserver(retryCount = 0, maxRetries = 5) {
 
 // Start initialization
 initializeObserver();
+
+function seekTo(time) {
+    const progressBar = document.querySelector('ytmusic-player-bar #progress-bar');
+    if (progressBar) {
+        progressBar.value = time;
+        progressBar.dispatchEvent(new Event('change', { bubbles: true }));
+        progressBar.dispatchEvent(new Event('immediate-value-change', { bubbles: true }));
+    }
+}

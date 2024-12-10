@@ -22,6 +22,9 @@ public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
     [ObservableProperty]
     private TrackInfo? _trackInfo;
 
+    [ObservableProperty]
+    private bool _isSeeking;
+
     [ObservableProperty] private TimeInfo? _timeInfo;
     
     public void PlaybackStateChanged(PlayStateMessage message)
@@ -36,7 +39,23 @@ public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
     
     public void TimeInfoChanged(TimeInfoMessage message)
     {
-        TimeInfo = message.TimeInfo;
+        if (!IsSeeking)
+        {
+            TimeInfo = message.TimeInfo;
+        }
+    }
+
+    [RelayCommand]
+    private void SeekStart()
+    {
+        IsSeeking = true;
+    }
+    
+    [RelayCommand]
+    private void SeekEnd(double value)
+    {
+        IsSeeking = false;
+        commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.Seek, value));
     }
     
     private bool IsBusyCanExecute() => !IsBusy;

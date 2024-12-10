@@ -39,7 +39,16 @@
                     Minimum="0"
                     SmallChange="15"
                     LargeChange="60"
-                    Maximum="{Binding TimeInfo.Total, FallbackValue=100}" />
+                    Maximum="{Binding TimeInfo.Total, FallbackValue=100}">
+                <behaviors:Interaction.Triggers>
+                    <behaviors:EventTrigger EventName="PreviewMouseDown">
+                        <behaviors:InvokeCommandAction Command="{Binding SeekStartCommand}" />
+                    </behaviors:EventTrigger>
+                    <behaviors:EventTrigger EventName="PreviewMouseUp">
+                        <behaviors:InvokeCommandAction Command="{Binding SeekEndCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Slider}, Path=Value}" />
+                    </behaviors:EventTrigger>
+                </behaviors:Interaction.Triggers>
+            </Slider>
             <StackPanel Orientation="Horizontal" Margin="8,0,0,0">
                 <Button Style="{StaticResource MahApps.Styles.Button.Circle}"
                         Command="{Binding PreviousCommand}"
