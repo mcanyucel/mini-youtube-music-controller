@@ -14,6 +14,7 @@ public class TrackInfoMessage : YoutubeMusicMessage
             trackInfoNode.GetProperty("title").GetString() ?? string.Empty,
             trackInfoNode.GetProperty("artist").GetString() ?? string.Empty,
             trackInfoNode.GetProperty("album").GetString() ?? string.Empty,
+            trackInfoNode.GetProperty("year").GetString() ?? string.Empty,
             trackInfoNode.GetProperty("albumArtUrl").GetString() ?? string.Empty
         );
     }

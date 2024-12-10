@@ -19,14 +19,23 @@ function checkSongInfo() {
         const title = titleElement ? titleElement.textContent.trim() : "Unknown";
         let artist = "Unknown";
         let album = "Unknown";
+        let year = "Unknown";
 
         if (bylineElement) {
+            const spans = bylineElement.querySelectorAll('span.style-scope.yt-formatted-string');
             const links = bylineElement.querySelectorAll('a');
             if (links.length > 0) {
                 artist = links[0].textContent.trim();
             }
             if (links.length > 1) {
                 album = links[1].textContent.trim();
+            }
+            for (const span of spans) {
+                const text = span.textContent.trim();
+                if (/^\d{4}$/.test(text)) {
+                    year = text;
+                    break;
+                }
             }
         }
 
@@ -38,6 +47,7 @@ function checkSongInfo() {
                 title: title,
                 album: album,
                 artist: artist,
+                year: year,
                 albumArtUrl: albumArtUrl
             }
         });

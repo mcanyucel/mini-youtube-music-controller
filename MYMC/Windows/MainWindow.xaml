@@ -32,7 +32,7 @@
         </StatusBar>
         
         <Grid DockPanel.Dock="Bottom" Height="100">
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Margin="8,0,0,0">
                 <Button Style="{StaticResource MahApps.Styles.Button.Circle}"
                         Command="{Binding PreviousCommand}"
                         Width="36"
@@ -60,7 +60,40 @@
                     <iconpacks:PackIconMaterial HorizontalAlignment="Center" VerticalAlignment="Center"
                                                 Kind="SkipNextOutline" />
                 </Button>
-                <TextBlock Text="{Binding TrackInfo.Title, FallbackValue=''}"></TextBlock>
+                <Grid VerticalAlignment="Center" Margin="16,0,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    
+                    <TextBlock Grid.Row="0" Grid.Column="0"
+                               Grid.ColumnSpan="5"
+                               Text="{Binding TrackInfo.Title, FallbackValue='Title'}"
+                               VerticalAlignment="Center"
+                               FontWeight="Bold"/>
+                    <TextBlock Grid.Row="1" Grid.Column="0"
+                               Text="{Binding TrackInfo.Artist, FallbackValue='Artist'}"
+                               VerticalAlignment="Center"/>
+                    <iconpacks:PackIconFontAwesome Grid.Row="1" Grid.Column="1" 
+                                                   Kind="CircleSolid" VerticalAlignment="Center" Width="4" Margin="4, 0" />
+                    <TextBlock Grid.Row="1" Grid.Column="2" 
+                               Text="{Binding TrackInfo.Album, FallbackValue='Album'}"
+                               VerticalAlignment="Center"/>
+                    <iconpacks:PackIconFontAwesome Grid.Row="1" Grid.Column="3" 
+                                                   Kind="CircleSolid" VerticalAlignment="Center" Width="4" Margin="4, 0" />
+                    <TextBlock Grid.Row="1" Grid.Column="4" 
+                               Text="{Binding TrackInfo.Year, FallbackValue='Year'}"
+                               VerticalAlignment="Center"/>
+                </Grid>
+                
+                
             </StackPanel>
         </Grid>
 
