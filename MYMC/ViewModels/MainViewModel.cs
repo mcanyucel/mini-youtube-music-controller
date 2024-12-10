@@ -11,7 +11,11 @@ public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
     [ObservableProperty]
     private string _statusText = "Loading client...";
 
-    [ObservableProperty] private bool _isBusy = true;
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(TogglePlaybackCommand))]
+    [NotifyCanExecuteChangedFor(nameof(PreviousCommand))]
+    [NotifyCanExecuteChangedFor(nameof(NextCommand))]
+    private bool _isBusy = true;
     
     [ObservableProperty] private bool _isPlaying;
     
@@ -19,11 +23,25 @@ public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
     {
         IsPlaying = message.IsPlaying;
     }
+    
+    private bool IsBusyCanExecute() => !IsBusy;
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(IsBusyCanExecute))]
     private void TogglePlayback()
     {
         commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.TogglePlayback));
+    }
+    
+    [RelayCommand(CanExecute = nameof(IsBusyCanExecute))]
+    private void Previous()
+    {
+        commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.Previous));
+    }
+    
+    [RelayCommand(CanExecute = nameof(IsBusyCanExecute))]
+    private void Next()
+    {
+        commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.Next));
     }
     
     [RelayCommand]

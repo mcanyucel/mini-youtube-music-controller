@@ -36,12 +36,24 @@ public sealed partial class MainWindow : IDisposable
             case PlayerCommandType.SetVolume:
                 break;
             case PlayerCommandType.Next:
+                await Next();
                 break;
             case PlayerCommandType.Previous:
+                await Previous();
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(e), actualValue: e.CommandType, "Unknown command type");
         }
+    }
+
+    private async Task Next()
+    {
+        await ExecuteScriptAsync("document.querySelector('ytmusic-player-bar tp-yt-paper-icon-button[aria-label=\"Next\"]').click();");
+    }
+    
+    private async Task Previous()
+    {
+        await ExecuteScriptAsync("document.querySelector('ytmusic-player-bar tp-yt-paper-icon-button[aria-label=\"Previous\"]').click();");
     }
 
     private async Task TogglePlayback()
