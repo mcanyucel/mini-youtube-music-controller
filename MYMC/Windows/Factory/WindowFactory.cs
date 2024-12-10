@@ -1,10 +1,11 @@
 ﻿using System.Windows;
+using MYMC.Services.Interface;
 using MYMC.ViewModels;
 using Serilog;
 
 namespace MYMC.Windows.Factory;
 
-public class WindowFactory(IDictionary<Type, Type> viewModelMapping, IViewModelFactory viewModelFactory, ILogger logger) : IWindowFactory
+public class WindowFactory(IDictionary<Type, Type> viewModelMapping, IViewModelFactory viewModelFactory, ILogger logger, IPlayerCommandBus commandBus) : IWindowFactory
 {
     public Window CreateWindowForViewModel<TViewModel>() where TViewModel : IViewModel
     {
@@ -21,7 +22,7 @@ public class WindowFactory(IDictionary<Type, Type> viewModelMapping, IViewModelF
             throw new InvalidOperationException($"Window type {windowType} does not inherit from {typeof(Window)}");
         }
 
-        if (Activator.CreateInstance(windowType) is Window window)
+        if (Activator.CreateInstance(windowType, commandBus) is Window window)
         {
             var viewModel = viewModelFactory.Create<TViewModel>();
             window.DataContext = viewModel;

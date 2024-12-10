@@ -32,7 +32,10 @@
         </StatusBar>
         
         <Grid DockPanel.Dock="Bottom" Height="100">
-            <Button Style="{StaticResource MahApps.Styles.Button.Circle}" Width="48" Height="48">
+            <Button Style="{StaticResource MahApps.Styles.Button.Circle}"
+                    Command="{Binding TogglePlaybackCommand}"
+                    Width="48" 
+                    Height="48">
                 <iconpacks:PackIconMaterial HorizontalAlignment="Center" VerticalAlignment="Center">
                     <iconpacks:PackIconMaterial.Kind>
                         <MultiBinding Mode="OneWay" Converter="{StaticResource PlaybackStateToIconConverter}">

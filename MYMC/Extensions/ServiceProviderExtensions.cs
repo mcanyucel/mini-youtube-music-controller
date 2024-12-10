@@ -61,6 +61,7 @@ public static class ServiceProviderExtensions
     public static ServiceCollection ConfigureCoreServices(this ServiceCollection services)
     {
         services.AddSingleton<IWindowService, WindowService>();
+        services.AddSingleton<IPlayerCommandBus, PlayerCommandBus>();
         return services;
     }
 }

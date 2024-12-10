@@ -1,11 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MYMC.Models;
+using MYMC.Services.Interface;
 using Serilog;
 
 namespace MYMC.ViewModels;
 
-public partial class MainViewModel(ILogger logger) : ObservableObject, IViewModel
+public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus) : ObservableObject, IViewModel
 {
     [ObservableProperty]
     private string _statusText = "Loading client...";
@@ -19,26 +20,10 @@ public partial class MainViewModel(ILogger logger) : ObservableObject, IViewMode
         IsPlaying = message.IsPlaying;
     }
 
+    [RelayCommand]
     private void TogglePlayback()
     {
-        if (IsPlaying)
-        {
-            Pause();
-        }
-        else
-        {
-            Play();
-        }
-    }
-    
-    private void Play()
-    {
-        logger.Information("Playing.");
-    }
-    
-    private void Pause()
-    {
-        logger.Information("Pausing.");
+        commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.TogglePlayback));
     }
     
     [RelayCommand]
