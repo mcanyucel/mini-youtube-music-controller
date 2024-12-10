@@ -12,7 +12,8 @@
                  xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
                  Loaded="MainWindow_OnLoaded"
                  mc:Ignorable="d"
-                 Title="MainWindow" Height="450" Width="800">
+                 MinWidth="640"
+                 Title="MainWindow" Height="450" Width="640">
     <mah:MetroWindow.Resources>
         <converters:FractionConverter x:Key="FractionConverter" />
         <converters:PlaybackStateToIconConverter x:Key="PlaybackStateToIconConverter" />
@@ -84,28 +85,33 @@
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    
-                    <TextBlock Grid.Row="0" Grid.Column="0"
+                    <Image Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"
+                           Source="{Binding TrackInfo.AlbumArtUrl, FallbackValue='pack://application:,,,/MYMC;component/Resources/album_art_placeholder.png'}"
+                           Width="48"
+                           Height="48"
+                           Margin="0,0,12,0"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1"
                                Grid.ColumnSpan="5"
                                Text="{Binding TrackInfo.Title, FallbackValue='Title'}"
                                VerticalAlignment="Center"
                                FontWeight="Bold"/>
-                    <TextBlock Grid.Row="1" Grid.Column="0"
+                    <TextBlock Grid.Row="1" Grid.Column="1"
                                Text="{Binding TrackInfo.Artist, FallbackValue='Artist'}"
                                VerticalAlignment="Center"/>
-                    <iconpacks:PackIconFontAwesome Grid.Row="1" Grid.Column="1" 
+                    <iconpacks:PackIconFontAwesome Grid.Row="1" Grid.Column="2" 
                                                    Kind="CircleSolid" VerticalAlignment="Center" Width="4" Margin="4, 0" />
-                    <TextBlock Grid.Row="1" Grid.Column="2" 
+                    <TextBlock Grid.Row="1" Grid.Column="3" 
                                Text="{Binding TrackInfo.Album, FallbackValue='Album'}"
                                VerticalAlignment="Center"/>
-                    <iconpacks:PackIconFontAwesome Grid.Row="1" Grid.Column="3" 
+                    <iconpacks:PackIconFontAwesome Grid.Row="1" Grid.Column="4" 
                                                    Kind="CircleSolid" VerticalAlignment="Center" Width="4" Margin="4, 0" />
-                    <TextBlock Grid.Row="1" Grid.Column="4" 
+                    <TextBlock Grid.Row="1" Grid.Column="5" 
                                Text="{Binding TrackInfo.Year, FallbackValue='Year'}"
                                VerticalAlignment="Center"/>
                 </Grid>
