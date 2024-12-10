@@ -32,6 +32,14 @@
         </StatusBar>
         
         <Grid DockPanel.Dock="Bottom" Height="100">
+            <Slider Style="{StaticResource MahApps.Styles.Slider.Flat}"
+                    Value="{Binding TimeInfo.Progress, FallbackValue=0}"
+                    Height="6"
+                    VerticalAlignment="Top"
+                    Minimum="0"
+                    SmallChange="15"
+                    LargeChange="60"
+                    Maximum="{Binding TimeInfo.Total, FallbackValue=100}" />
             <StackPanel Orientation="Horizontal" Margin="8,0,0,0">
                 <Button Style="{StaticResource MahApps.Styles.Button.Circle}"
                         Command="{Binding PreviousCommand}"

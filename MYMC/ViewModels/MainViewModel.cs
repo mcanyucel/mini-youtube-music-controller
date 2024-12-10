@@ -21,6 +21,8 @@ public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
 
     [ObservableProperty]
     private TrackInfo? _trackInfo;
+
+    [ObservableProperty] private TimeInfo? _timeInfo;
     
     public void PlaybackStateChanged(PlayStateMessage message)
     {
@@ -34,7 +36,7 @@ public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
     
     public void TimeInfoChanged(TimeInfoMessage message)
     {
-        // Not implemented
+        TimeInfo = message.TimeInfo;
     }
     
     private bool IsBusyCanExecute() => !IsBusy;
