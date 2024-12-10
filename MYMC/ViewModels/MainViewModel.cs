@@ -18,10 +18,23 @@ public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
     private bool _isBusy = true;
     
     [ObservableProperty] private bool _isPlaying;
+
+    [ObservableProperty]
+    private TrackInfo? _trackInfo;
     
     public void PlaybackStateChanged(PlayStateMessage message)
     {
         IsPlaying = message.IsPlaying;
+    }
+    
+    public void TrackInfoChanged(TrackInfoMessage message)
+    {
+        TrackInfo = message.TrackInfo;
+    }
+    
+    public void TimeInfoChanged(TimeInfoMessage message)
+    {
+        // Not implemented
     }
     
     private bool IsBusyCanExecute() => !IsBusy;

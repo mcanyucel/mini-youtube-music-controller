@@ -60,6 +60,7 @@
                     <iconpacks:PackIconMaterial HorizontalAlignment="Center" VerticalAlignment="Center"
                                                 Kind="SkipNextOutline" />
                 </Button>
+                <TextBlock Text="{Binding TrackInfo.Title, FallbackValue=''}"></TextBlock>
             </StackPanel>
         </Grid>
 

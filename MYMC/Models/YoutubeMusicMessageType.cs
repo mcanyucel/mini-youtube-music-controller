@@ -5,4 +5,5 @@ public enum YoutubeMusicMessageType
     PlayStateChanged,
     VolumeChanged,
     TrackInfoChanged,
+    TimeInfoChanged,
 }

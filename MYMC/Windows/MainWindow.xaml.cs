@@ -110,6 +110,13 @@ public sealed partial class MainWindow : IDisposable
                 case PlayStateMessage playState:
                     HandlePlayStateChange(playState);
                     break;
+                case TrackInfoMessage trackInfo:
+                    HandleTrackInfoChanged(trackInfo);
+                    break;
+                case TimeInfoMessage timeInfo:
+                    HandleTimeInfoChanged(timeInfo);
+                    break;
+                
                 default:
                     Debug.WriteLine($"Unknown message type: {message.MessageType}");
                     break;
@@ -121,7 +128,17 @@ public sealed partial class MainWindow : IDisposable
             Debug.WriteLine($"Message content was: {e.WebMessageAsJson}");
         }
     }
-    
+
+    private void HandleTimeInfoChanged(TimeInfoMessage timeInfo)
+    {
+        _viewModel?.TimeInfoChanged(timeInfo);
+    }
+
+    private void HandleTrackInfoChanged(TrackInfoMessage trackInfo)
+    {
+        _viewModel?.TrackInfoChanged(trackInfo);
+    }
+
     private void HandlePlayStateChange(PlayStateMessage message)
     {
         _viewModel?.PlaybackStateChanged(message);

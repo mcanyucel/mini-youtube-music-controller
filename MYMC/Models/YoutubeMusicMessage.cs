@@ -23,7 +23,8 @@ public abstract class YoutubeMusicMessage
             {
                 YoutubeMusicMessageType.PlayStateChanged => new PlayStateMessage(root),
                 YoutubeMusicMessageType.VolumeChanged => throw new NotImplementedException(),
-                YoutubeMusicMessageType.TrackInfoChanged => throw new NotImplementedException(),
+                YoutubeMusicMessageType.TrackInfoChanged => new TrackInfoMessage(root),
+                YoutubeMusicMessageType.TimeInfoChanged => new TimeInfoMessage(root),
                 _ => throw new ArgumentException($"Unknown message type: {typeStr}")
             };
         }

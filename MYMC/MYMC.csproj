@@ -30,7 +30,7 @@
     <ItemGroup>
       <None Remove="Scripts\player-state.js" />
       <Content Include="Scripts\player-state.js">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
     </ItemGroup>
 
