@@ -6,4 +6,5 @@ public enum YoutubeMusicMessageType
     VolumeChanged,
     TrackInfoChanged,
     TimeInfoChanged,
+    RepeatModeChanged
 }

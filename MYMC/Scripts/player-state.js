@@ -10,6 +10,20 @@ function checkPlayState() {
     }
 }
 
+function checkRepeatState() {
+    const repeatButton = document.querySelector('ytmusic-player-bar tp-yt-paper-icon-button[class="repeat style-scope ytmusic-player-bar"]');
+    if (repeatButton) {
+        const repeatMode = repeatButton.getAttribute('aria-label');
+        window.chrome.webview.postMessage({
+            type: 'RepeatModeChanged',
+            mode: repeatMode
+        });
+    }
+    else {
+        console.error("Repeat button not found");
+    }
+}
+
 function checkSongInfo() {
     try {
         const titleElement = document.querySelector('ytmusic-player-bar .title');
@@ -91,6 +105,7 @@ function debounce(func, wait) {
 const debouncedCheckSongInfo = debounce(checkSongInfo, 250);
 const debouncedCheckPlayState = debounce(checkPlayState, 250);
 const debouncedCheckTimeInfo = debounce(checkTimeInfo, 100);
+const debouncedCheckRepeatState = debounce(checkRepeatState, 250);
 
 function isRelevantMutation(mutation) {
     try {
@@ -101,6 +116,14 @@ function isRelevantMutation(mutation) {
             const label = mutation.target.getAttribute('aria-label');
             if (label === 'Play' || label === 'Pause') {
                 return 'playState';
+            }
+        }
+        
+        if (mutation.type === 'attributes' &&
+        mutation.attributeName === 'aria-label') {
+            const label = mutation.target.getAttribute('aria-label');
+            if (label === 'Repeat off' || label === 'Repeat all' || label === 'Repeat one') {
+                return 'repeatState';
             }
         }
 
@@ -130,6 +153,7 @@ const observer = new MutationObserver((mutations) => {
     let shouldCheckPlay = false;
     let shouldCheckSong = false;
     let shouldCheckTime = false;
+    let shouldCheckRepeat = false;
 
     for (const mutation of mutations) {
         const mutationType = isRelevantMutation(mutation);
@@ -143,12 +167,16 @@ const observer = new MutationObserver((mutations) => {
             case 'timeInfo':
                 shouldCheckTime = true;
                 break;
+            case 'repeatState':
+                shouldCheckRepeat = true;
+                break;
         }
     }
 
     if (shouldCheckPlay) debouncedCheckPlayState();
     if (shouldCheckSong) debouncedCheckSongInfo();
     if (shouldCheckTime) debouncedCheckTimeInfo();
+    if (shouldCheckRepeat) debouncedCheckRepeatState();
 });
 
 function initializeObserver(retryCount = 0, maxRetries = 5) {
@@ -167,6 +195,7 @@ function initializeObserver(retryCount = 0, maxRetries = 5) {
         checkPlayState();
         checkSongInfo();
         checkTimeInfo();
+        checkRepeatState();
     } else if (retryCount < maxRetries) {
         console.log(`Player bar not ready, retrying... (${retryCount + 1}/${maxRetries})`);
         setTimeout(() => initializeObserver(retryCount + 1, maxRetries), 1000);
@@ -178,6 +207,7 @@ function initializeObserver(retryCount = 0, maxRetries = 5) {
 // Start initialization
 initializeObserver();
 
+// Called from the host window
 function seekTo(time) {
     const progressBar = document.querySelector('ytmusic-player-bar #progress-bar');
     if (progressBar) {

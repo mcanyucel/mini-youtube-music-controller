@@ -26,6 +26,8 @@ public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
     private bool _isSeeking;
 
     [ObservableProperty] private TimeInfo? _timeInfo;
+
+    [ObservableProperty] private RepeatMode _repeatMode = RepeatMode.Off;
     
     public void PlaybackStateChanged(PlayStateMessage message)
     {
@@ -43,6 +45,11 @@ public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
         {
             TimeInfo = message.TimeInfo;
         }
+    }
+    
+    public void RepeatModeChanged(RepeatModeMessage message)
+    {
+        RepeatMode = message.RepeatMode;
     }
 
     [RelayCommand]

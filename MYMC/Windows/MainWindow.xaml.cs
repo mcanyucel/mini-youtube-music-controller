@@ -126,7 +126,9 @@ public sealed partial class MainWindow : IDisposable
                 case TimeInfoMessage timeInfo:
                     HandleTimeInfoChanged(timeInfo);
                     break;
-                
+                case RepeatModeMessage repeatMode:
+                    HandleRepeatModeChanged(repeatMode);
+                    break;
                 default:
                     Debug.WriteLine($"Unknown message type: {message.MessageType}");
                     break;
@@ -142,6 +144,11 @@ public sealed partial class MainWindow : IDisposable
     private void HandleTimeInfoChanged(TimeInfoMessage timeInfo)
     {
         _viewModel?.TimeInfoChanged(timeInfo);
+    }
+    
+    private void HandleRepeatModeChanged(RepeatModeMessage repeatMode)
+    {
+        _viewModel?.RepeatModeChanged(repeatMode);
     }
 
     private void HandleTrackInfoChanged(TrackInfoMessage trackInfo)

@@ -17,10 +17,11 @@
     <mah:MetroWindow.Resources>
         <converters:FractionConverter x:Key="FractionConverter" />
         <converters:PlaybackStateToIconConverter x:Key="PlaybackStateToIconConverter" />
+        <converters:RepeatModeToIconConverter x:Key="RepeatModeToIconConverter" />
     </mah:MetroWindow.Resources>
     <DockPanel LastChildFill="True">
 
-        <StatusBar DockPanel.Dock="Bottom" x:Name="StatusBar">
+        <StatusBar DockPanel.Dock="Bottom" x:Name="StatusBar" Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}">
             <StatusBarItem Content="{Binding StatusText}"
                            Width="{Binding ElementName=StatusBar, Path=ActualWidth, Converter={StaticResource FractionConverter}, ConverterParameter=0.2}"/>
             <Separator Foreground="{DynamicResource MahApps.Brushes.Badged.Foreground}" />
@@ -36,7 +37,7 @@
             <Slider Style="{StaticResource MahApps.Styles.Slider.Flat}"
                     Value="{Binding TimeInfo.Progress, FallbackValue=0}"
                     Height="6"
-                    VerticalAlignment="Top"
+                    VerticalAlignment="Bottom"
                     Minimum="0"
                     SmallChange="15"
                     LargeChange="60"
@@ -50,7 +51,7 @@
                     </behaviors:EventTrigger>
                 </behaviors:Interaction.Triggers>
             </Slider>
-            <StackPanel Orientation="Horizontal" Margin="8,0,0,0">
+            <StackPanel Orientation="Horizontal" Margin="8,0,0,16">
                 <Button Style="{StaticResource MahApps.Styles.Button.Circle}"
                         Command="{Binding PreviousCommand}"
                         Width="36"
@@ -115,6 +116,16 @@
                                Text="{Binding TrackInfo.Year, FallbackValue='Year'}"
                                VerticalAlignment="Center"/>
                 </Grid>
+                
+                <StackPanel Orientation="Horizontal">
+                    <Button Style="{StaticResource MahApps.Styles.Button.Circle}"
+                            Margin="16,0,0,0"
+                            Width="40"
+                            BorderThickness="0"
+                            Height="40">
+                        <iconpacks:PackIconMaterial Kind="{Binding RepeatMode, Converter={StaticResource RepeatModeToIconConverter}}"></iconpacks:PackIconMaterial>
+                    </Button>
+                </StackPanel>
                 
                 
             </StackPanel>
