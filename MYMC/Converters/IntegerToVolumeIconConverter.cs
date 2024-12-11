@@ -22,7 +22,7 @@ public class IntegerToVolumeIconConverter : IValueConverter
         };
     }
 
-    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         throw new InvalidOperationException("IntegerToVolumeIconConverter can only be used OneWay.");
     }

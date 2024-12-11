@@ -5,7 +5,7 @@ using MYMC.Windows.Factory;
 
 namespace MYMC.Services.Implementation;
 
-public sealed class WindowService(IViewModelFactory viewModelFactory, IWindowFactory windowFactory) : IWindowService, IDisposable
+public sealed class WindowService(IWindowFactory windowFactory) : IWindowService, IDisposable
 {
     public void ShowWindow<TViewModel>(IDictionary<string, object>? parameters = null) where TViewModel : IViewModel
     {
