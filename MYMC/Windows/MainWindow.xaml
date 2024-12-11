@@ -145,6 +145,7 @@
                                 BorderThickness="0"
                                 Margin="0"
                                 VerticalAlignment="Bottom"
+                                Command="{Binding ToggleLikeCommand}"
                                 Width="30"
                                 Height="30">
                             <iconpacks:PackIconMaterial

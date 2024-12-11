@@ -53,9 +53,17 @@ public sealed partial class MainWindow : IDisposable
             case PlayerCommandType.SetCompactMode:
                 SetCompactMode(e.Parameter);
                 break;
+            case PlayerCommandType.ToggleLike:
+                await ToggleLike();
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(e), actualValue: e.CommandType, "Unknown command type");
         }
+    }
+
+    private async Task ToggleLike()
+    {
+        await ExecuteScriptAsync("document.querySelector('button[aria-label=\"Like\"]')?.click();");
     }
 
     private async Task SeekToTime(object? e)

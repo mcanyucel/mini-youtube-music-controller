@@ -18,6 +18,7 @@ public partial class MainViewModel : ObservableObject, IViewModel
     [NotifyCanExecuteChangedFor(nameof(NextCommand))]
     [NotifyCanExecuteChangedFor(nameof(ToggleRepeatModeCommand))]
     [NotifyCanExecuteChangedFor(nameof(ToggleShuffleCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ToggleLikeCommand))]
     private bool _isBusy = true;
     
     [ObservableProperty] private bool _isPlaying;
@@ -171,6 +172,12 @@ public partial class MainViewModel : ObservableObject, IViewModel
         {
             _commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.SetVolume, _previousVolume));
         }
+    }
+
+    [RelayCommand(CanExecute = nameof(IsBusyCanExecute))]
+    private void ToggleLike()
+    {
+        _commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.ToggleLike));
     }
     
     private bool IsBusyCanExecute() => !IsBusy;

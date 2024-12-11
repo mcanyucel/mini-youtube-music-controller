@@ -11,7 +11,7 @@ function checkPlayState() {
 }
 
 function checkLikedState() {
-    const likeButton = document.querySelector('button[aria-label="Like"]');
+    const likeButton = document.querySelector('yt-button-shape[aria-label="Like"]');
     
     if (likeButton) {
         const state = likeButton.getAttribute('aria-pressed');

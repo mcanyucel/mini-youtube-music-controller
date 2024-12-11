@@ -9,5 +9,6 @@ public enum PlayerCommandType
     Seek,
     ToggleRepeatMode,
     ToggleShuffle,
-    SetCompactMode
+    SetCompactMode,
+    ToggleLike
 }
