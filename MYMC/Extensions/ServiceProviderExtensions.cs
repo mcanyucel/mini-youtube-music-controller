@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using MYMC.Services.Implementation;
 using MYMC.Services.Interface;
+using MYMC.Settings;
 using MYMC.ViewModels;
 using MYMC.Windows;
 using MYMC.Windows.Factory;

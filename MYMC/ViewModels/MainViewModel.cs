@@ -2,11 +2,12 @@
 using CommunityToolkit.Mvvm.Input;
 using MYMC.Models;
 using MYMC.Services.Interface;
+using MYMC.Settings;
 using Serilog;
 
 namespace MYMC.ViewModels;
 
-public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus) : ObservableObject, IViewModel
+public partial class MainViewModel : ObservableObject, IViewModel
 {
     [ObservableProperty]
     private string _statusText = "Loading client...";
@@ -22,7 +23,24 @@ public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
     [ObservableProperty] private bool _isPlaying;
     
     [ObservableProperty] private bool _isShuffled;
+    
+    
+    private bool _topMost;
 
+    public bool TopMost
+    {
+        get => _topMost;
+        set
+        {
+            if (!SetProperty(ref _topMost, value)) return;
+            
+            _userSettings.IsTopMost = value;
+            _userSettings.Save();
+        }
+    }
+
+    [ObservableProperty] private bool _isCompact;
+    
     [ObservableProperty]
     private TrackInfo? _trackInfo;
 
@@ -37,7 +55,25 @@ public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
     [ObservableProperty] private int _volume = 100;
 
     private int _previousVolume;
+    private readonly ILogger _logger;
+    private readonly IPlayerCommandBus _commandBus;
+    private readonly UserSettings _userSettings;
     
+    public MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
+    {
+        _logger = logger;
+        _commandBus = commandBus;
+        _userSettings = UserSettings.Load();
+        
+        ApplyUserSettings();
+    }
+    
+    private void ApplyUserSettings()
+    {
+        TopMost = _userSettings.IsTopMost;
+        IsCompact = _userSettings.IsCompactMode;
+    }
+
     public void PlaybackStateChanged(PlayStateMessage message)
     {
         IsPlaying = message.IsPlaying;
@@ -47,6 +83,8 @@ public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
     {
         IsShuffled = message.IsShuffled;
     }
+    
+    
     
     public void VolumeInfoChanged(VolumeInfoMessage message)
     {
@@ -84,7 +122,7 @@ public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
     private void SeekEnd(double value)
     {
         IsSeeking = false;
-        commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.Seek, value));
+        _commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.Seek, value));
     }
     
     [RelayCommand]
@@ -97,7 +135,7 @@ public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
     private void VolumeAdjustEnd(double value)
     {
         IsAdjustingVolume = false;
-        commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.SetVolume, value));
+        _commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.SetVolume, value));
     }
 
     [RelayCommand]
@@ -106,11 +144,11 @@ public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
         if (Volume > 0)
         {
             _previousVolume = Volume;
-            commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.SetVolume, 0));
+            _commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.SetVolume, 0));
         }
         else
         {
-            commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.SetVolume, _previousVolume));
+            _commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.SetVolume, _previousVolume));
         }
     }
     
@@ -119,31 +157,31 @@ public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
     [RelayCommand(CanExecute = nameof(IsBusyCanExecute))]
     private void TogglePlayback()
     {
-        commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.TogglePlayback));
+        _commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.TogglePlayback));
     }
 
     [RelayCommand(CanExecute = nameof(IsBusyCanExecute))]
     private void ToggleRepeatMode()
     {
-        commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.ToggleRepeatMode));
+        _commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.ToggleRepeatMode));
     }
 
     [RelayCommand(CanExecute = nameof(IsBusyCanExecute))]
     private void ToggleShuffle()
     {
-        commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.ToggleShuffle));
+        _commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.ToggleShuffle));
     }
     
     [RelayCommand(CanExecute = nameof(IsBusyCanExecute))]
     private void Previous()
     {
-        commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.Previous));
+        _commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.Previous));
     }
     
     [RelayCommand(CanExecute = nameof(IsBusyCanExecute))]
     private void Next()
     {
-        commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.Next));
+        _commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.Next));
     }
     
     [RelayCommand]
@@ -157,6 +195,6 @@ public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
     private async Task NavigationStarting()
     {
         await Task.Delay(100);
-        logger.Information("Navigation starting.");
+        _logger.Information("Navigation starting.");
     }
 }

@@ -11,16 +11,26 @@
                  d:DataContext="{d:DesignInstance Type=viewmodel:MainViewModel}"
                  xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
                  Loaded="MainWindow_OnLoaded"
+                 Topmost="{Binding TopMost}"
                  mc:Ignorable="d"
                  MinWidth="640"
-                 Title="MainWindow" Height="450" Width="640">
+                 Title="Youtube Music" Height="450" Width="640">
     <mah:MetroWindow.Resources>
         <converters:FractionConverter x:Key="FractionConverter" />
         <converters:PlaybackStateToIconConverter x:Key="PlaybackStateToIconConverter" />
         <converters:RepeatModeToIconConverter x:Key="RepeatModeToIconConverter" />
         <converters:BooleanToShuffleIconConverter x:Key="BooleanToShuffleIconConverter"></converters:BooleanToShuffleIconConverter>
         <converters:IntegerToVolumeIconConverter x:Key="IntegerToVolumeIconConverter"></converters:IntegerToVolumeIconConverter>
+        <converters:BooleanToPinIconConverter x:Key="BooleanToPinIconConverter"></converters:BooleanToPinIconConverter>
     </mah:MetroWindow.Resources>
+    <mah:MetroWindow.RightWindowCommands>
+        <mah:WindowCommands>
+            <ToggleButton IsChecked="{Binding TopMost}"
+                          ToolTip="Always on Top">
+                <iconpacks:PackIconMaterial Kind="{Binding TopMost, Converter={StaticResource BooleanToPinIconConverter}}"></iconpacks:PackIconMaterial>
+            </ToggleButton>
+        </mah:WindowCommands>
+    </mah:MetroWindow.RightWindowCommands>
     <DockPanel LastChildFill="True">
 
         <StatusBar DockPanel.Dock="Bottom" x:Name="StatusBar" Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}">
