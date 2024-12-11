@@ -27,6 +27,7 @@ public abstract class YoutubeMusicMessage
                 YoutubeMusicMessageType.TimeInfoChanged => new TimeInfoMessage(root),
                 YoutubeMusicMessageType.RepeatModeChanged => new RepeatModeMessage(root),
                 YoutubeMusicMessageType.ShuffleStateChanged => new ShuffleStateMessage(root),
+                YoutubeMusicMessageType.LikeStateChanged => new LikeStateMessage(root),
                 _ => throw new ArgumentException($"Unknown message type: {typeStr}")
             };
         }

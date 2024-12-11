@@ -22,6 +22,7 @@
         <converters:IntegerToVolumeIconConverter x:Key="IntegerToVolumeIconConverter"></converters:IntegerToVolumeIconConverter>
         <converters:BooleanToPinIconConverter x:Key="BooleanToPinIconConverter"></converters:BooleanToPinIconConverter>
         <converters:BooleanToCompactIconConverter x:Key="BooleanToCompactIconConverter"></converters:BooleanToCompactIconConverter>
+        <converters:BooleanToLikedIconConverter x:Key="BooleanToLikedIconConverter"></converters:BooleanToLikedIconConverter>
     </mah:MetroWindow.Resources>
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
@@ -134,23 +135,46 @@
                 </Grid>
                 
                 <StackPanel Orientation="Horizontal">
-                    <Button Style="{StaticResource MahApps.Styles.Button.Circle}"
-                            Command="{Binding ToggleRepeatModeCommand}"
-                            ToolTip="Repeat"
-                            Margin="16,0,0,0"
-                            Width="40"
-                            BorderThickness="0"
-                            Height="40">
-                        <iconpacks:PackIconMaterial Kind="{Binding RepeatMode, Converter={StaticResource RepeatModeToIconConverter}}"></iconpacks:PackIconMaterial>
-                    </Button>
-                    <Button Style="{StaticResource MahApps.Styles.Button.Circle}"
-                            Width="40"
-                            Height="40"
-                            Command="{Binding ToggleShuffleCommand}"
-                            ToolTip="Shuffle"
-                            BorderThickness="0">
-                        <iconpacks:PackIconMaterial Kind="{Binding IsShuffled, Converter={StaticResource BooleanToShuffleIconConverter}}"></iconpacks:PackIconMaterial>
-                    </Button>
+                    <Border BorderThickness="1,0,0,0" 
+                            BorderBrush="Gray" 
+                            Margin="4,0,0,0"
+                            Padding="4,0,4,0">
+                    <UniformGrid Rows="2" Columns="2">
+                        <Button Background="Transparent"
+                                ToolTip="Like"
+                                BorderThickness="0"
+                                Margin="0"
+                                VerticalAlignment="Bottom"
+                                Width="30"
+                                Height="30">
+                            <iconpacks:PackIconMaterial
+                                Kind="{Binding IsLiked, Converter={StaticResource BooleanToLikedIconConverter}}"></iconpacks:PackIconMaterial>
+                        </Button>
+                        <Button Background="Transparent"
+                                Command="{Binding ToggleRepeatModeCommand}"
+                                ToolTip="Repeat"
+                                VerticalAlignment="Bottom"
+                                BorderThickness="0"
+                                Margin="0"
+                                Width="30"
+                                Height="30">
+                            <iconpacks:PackIconMaterial Kind="{Binding RepeatMode, Converter={StaticResource RepeatModeToIconConverter}}"></iconpacks:PackIconMaterial>
+                        </Button>
+                        <Button Background="Transparent"
+                                Width="30"
+                                Height="30"
+                                Margin="0"
+                                VerticalAlignment="Top"
+                                Command="{Binding ToggleShuffleCommand}"
+                                ToolTip="Shuffle"
+                                BorderThickness="0">
+                            <iconpacks:PackIconMaterial Kind="{Binding IsShuffled, Converter={StaticResource BooleanToShuffleIconConverter}}"></iconpacks:PackIconMaterial>
+                        </Button>
+                    </UniformGrid>
+                        </Border>
+                    <Border BorderThickness="1,0,1,0" 
+                            BorderBrush="Gray" 
+                            Padding="4,0,4,0">
                     <DockPanel LastChildFill="True">
                         <Button DockPanel.Dock="Top"
                                 Style="{StaticResource MahApps.Styles.Button.Circle}"
@@ -181,7 +205,7 @@
                             </behaviors:Interaction.Triggers>
                         </Slider>    
                     </DockPanel>
-                    
+                    </Border>
                 </StackPanel>
                 
                 

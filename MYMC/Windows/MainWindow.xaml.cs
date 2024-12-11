@@ -177,6 +177,9 @@ public sealed partial class MainWindow : IDisposable
                 case VolumeInfoMessage volumeInfo:
                     HandleVolumeInfoChanged(volumeInfo);
                     break;
+                case LikeStateMessage likeState:
+                    HandleLikeStateChanged(likeState);
+                    break;
                 default:
                     Debug.WriteLine($"Unknown message type: {message.MessageType}");
                     break;
@@ -187,6 +190,11 @@ public sealed partial class MainWindow : IDisposable
             Debug.WriteLine($"Failed to handle message: {ex.Message}");
             Debug.WriteLine($"Message content was: {e.WebMessageAsJson}");
         }
+    }
+
+    private void HandleLikeStateChanged(LikeStateMessage likeState)
+    {
+        _viewModel?.LikeStateChanged(likeState);
     }
 
     private void HandleTimeInfoChanged(TimeInfoMessage timeInfo)

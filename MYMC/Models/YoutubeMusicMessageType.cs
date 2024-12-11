@@ -7,5 +7,6 @@ public enum YoutubeMusicMessageType
     TrackInfoChanged,
     TimeInfoChanged,
     RepeatModeChanged,
-    ShuffleStateChanged
+    ShuffleStateChanged,
+    LikeStateChanged
 }

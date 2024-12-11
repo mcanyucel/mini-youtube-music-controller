@@ -23,8 +23,8 @@ public partial class MainViewModel : ObservableObject, IViewModel
     [ObservableProperty] private bool _isPlaying;
     
     [ObservableProperty] private bool _isShuffled;
-    
-    
+
+    [ObservableProperty] private bool _isLiked;
 
     private bool _topMost;
     public bool TopMost
@@ -97,12 +97,15 @@ public partial class MainViewModel : ObservableObject, IViewModel
         IsPlaying = message.IsPlaying;
     }
     
+    public void LikeStateChanged(LikeStateMessage message)
+    {
+        IsLiked = message.IsLiked;
+    }
+    
     public void ShuffleStateChanged(ShuffleStateMessage message)
     {
         IsShuffled = message.IsShuffled;
     }
-    
-    
     
     public void VolumeInfoChanged(VolumeInfoMessage message)
     {

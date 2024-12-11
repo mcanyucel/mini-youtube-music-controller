@@ -10,6 +10,21 @@ function checkPlayState() {
     }
 }
 
+function checkLikedState() {
+    const likeButton = document.querySelector('button[aria-label="Like"]');
+    
+    if (likeButton) {
+        const state = likeButton.getAttribute('aria-pressed');
+        window.chrome.webview.postMessage({
+            type: 'LikeStateChanged',
+            isLiked: state === 'true'
+        });
+    }
+    else {
+        console.error("Like button not found");
+    }
+}
+
 function checkRepeatState() {
     const repeatButton = document.querySelector('ytmusic-player-bar tp-yt-paper-icon-button[class="repeat style-scope ytmusic-player-bar"]');
     if (repeatButton) {
@@ -138,6 +153,7 @@ const debouncedCheckTimeInfo = debounce(checkTimeInfo, 100);
 const debouncedCheckRepeatState = debounce(checkRepeatState, 250);
 const debouncedCheckShuffleState = debounce(checkShuffleState, 250);
 const debouncedCheckVolume = debounce(checkVolume, 250);
+const debouncedCheckLikedState = debounce(checkLikedState, 250);
 
 function isRelevantMutation(mutation) {
     try {
@@ -149,6 +165,11 @@ function isRelevantMutation(mutation) {
             if (label === 'Play' || label === 'Pause') {
                 return 'playState';
             }
+        }
+        
+        if (mutation.type === 'attributes' &&
+            mutation.attributeName === 'aria-pressed') {
+            return 'likedState';
         }
         
         if (mutation.type === 'attributes' &&
@@ -196,6 +217,7 @@ const observer = new MutationObserver((mutations) => {
     let shouldCheckRepeat = false;
     let shouldCheckShuffle = false;
     let shouldCheckVolume = false;
+    let shouldCheckLiked = false;
 
     for (const mutation of mutations) {
         const mutationType = isRelevantMutation(mutation);
@@ -218,6 +240,9 @@ const observer = new MutationObserver((mutations) => {
             case 'volume':
                 shouldCheckVolume = true;
                 break;
+            case 'likedState':
+                shouldCheckLiked = true;
+                break;
         }
     }
 
@@ -227,6 +252,7 @@ const observer = new MutationObserver((mutations) => {
     if (shouldCheckRepeat) debouncedCheckRepeatState();
     if (shouldCheckShuffle) debouncedCheckShuffleState();
     if (shouldCheckVolume) debouncedCheckVolume();
+    if (shouldCheckLiked) debouncedCheckLikedState();
 });
 
 function initializeObserver(retryCount = 0, maxRetries = 5) {
@@ -248,6 +274,7 @@ function initializeObserver(retryCount = 0, maxRetries = 5) {
         checkRepeatState();
         checkShuffleState();
         checkVolume();
+        checkLikedState();
     } else if (retryCount < maxRetries) {
         console.log(`Player bar not ready, retrying... (${retryCount + 1}/${maxRetries})`);
         setTimeout(() => initializeObserver(retryCount + 1, maxRetries), 1000);
