@@ -26,12 +26,17 @@ public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
     [ObservableProperty]
     private TrackInfo? _trackInfo;
 
-    [ObservableProperty]
-    private bool _isSeeking;
+    [ObservableProperty] private bool _isSeeking;
+    
+    [ObservableProperty] private bool _isAdjustingVolume;
 
     [ObservableProperty] private TimeInfo? _timeInfo;
 
     [ObservableProperty] private RepeatMode _repeatMode = RepeatMode.Off;
+    
+    [ObservableProperty] private int _volume = 100;
+
+    private int _previousVolume;
     
     public void PlaybackStateChanged(PlayStateMessage message)
     {
@@ -41,6 +46,14 @@ public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
     public void ShuffleStateChanged(ShuffleStateMessage message)
     {
         IsShuffled = message.IsShuffled;
+    }
+    
+    public void VolumeInfoChanged(VolumeInfoMessage message)
+    {
+        if (!IsAdjustingVolume)
+        {
+            Volume = message.Volume;
+        }
     }
     
     public void TrackInfoChanged(TrackInfoMessage message)
@@ -72,6 +85,33 @@ public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
     {
         IsSeeking = false;
         commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.Seek, value));
+    }
+    
+    [RelayCommand]
+    private void VolumeAdjustStart()
+    {
+        IsAdjustingVolume = true;
+    }
+    
+    [RelayCommand]
+    private void VolumeAdjustEnd(double value)
+    {
+        IsAdjustingVolume = false;
+        commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.SetVolume, value));
+    }
+
+    [RelayCommand]
+    private void ToggleMute()
+    {
+        if (Volume > 0)
+        {
+            _previousVolume = Volume;
+            commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.SetVolume, 0));
+        }
+        else
+        {
+            commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.SetVolume, _previousVolume));
+        }
     }
     
     private bool IsBusyCanExecute() => !IsBusy;

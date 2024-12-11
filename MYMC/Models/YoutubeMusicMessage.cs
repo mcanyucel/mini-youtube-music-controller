@@ -22,7 +22,7 @@ public abstract class YoutubeMusicMessage
             return messageType switch
             {
                 YoutubeMusicMessageType.PlayStateChanged => new PlayStateMessage(root),
-                YoutubeMusicMessageType.VolumeChanged => throw new NotImplementedException(),
+                YoutubeMusicMessageType.VolumeChanged => new VolumeInfoMessage(root),
                 YoutubeMusicMessageType.TrackInfoChanged => new TrackInfoMessage(root),
                 YoutubeMusicMessageType.TimeInfoChanged => new TimeInfoMessage(root),
                 YoutubeMusicMessageType.RepeatModeChanged => new RepeatModeMessage(root),

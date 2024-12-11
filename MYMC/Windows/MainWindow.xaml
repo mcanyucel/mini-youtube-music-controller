@@ -19,6 +19,7 @@
         <converters:PlaybackStateToIconConverter x:Key="PlaybackStateToIconConverter" />
         <converters:RepeatModeToIconConverter x:Key="RepeatModeToIconConverter" />
         <converters:BooleanToShuffleIconConverter x:Key="BooleanToShuffleIconConverter"></converters:BooleanToShuffleIconConverter>
+        <converters:IntegerToVolumeIconConverter x:Key="IntegerToVolumeIconConverter"></converters:IntegerToVolumeIconConverter>
     </mah:MetroWindow.Resources>
     <DockPanel LastChildFill="True">
 
@@ -136,6 +137,37 @@
                             BorderThickness="0">
                         <iconpacks:PackIconMaterial Kind="{Binding IsShuffled, Converter={StaticResource BooleanToShuffleIconConverter}}"></iconpacks:PackIconMaterial>
                     </Button>
+                    <DockPanel LastChildFill="True">
+                        <Button DockPanel.Dock="Top"
+                                Style="{StaticResource MahApps.Styles.Button.Circle}"
+                                Width="24"
+                                Height="24"
+                                Command="{Binding ToggleMuteCommand}"
+                                ToolTip="Mute"
+                                BorderThickness="0">
+                            <iconpacks:PackIconMaterial Foreground="{DynamicResource MahApps.Brushes.Accent}" 
+                                Kind="{Binding Volume, Converter={StaticResource IntegerToVolumeIconConverter}}"></iconpacks:PackIconMaterial>
+                        </Button>
+                        <Slider Orientation="Vertical"
+                                Margin="0,4"
+                                TickPlacement="Both"
+                                Minimum="0"
+                                Maximum="100"
+                                ToolTip="{Binding Volume}"
+                                Value="{Binding Volume}"
+                                TickFrequency="20">
+                            <behaviors:Interaction.Triggers>
+                                <behaviors:EventTrigger EventName="PreviewMouseDown">
+                                    <behaviors:InvokeCommandAction Command="{Binding VolumeAdjustStartCommand}"></behaviors:InvokeCommandAction>
+                                </behaviors:EventTrigger>
+                                <behaviors:EventTrigger EventName="PreviewMouseUp">
+                                    <behaviors:InvokeCommandAction Command="{Binding VolumeAdjustEndCommand}"
+                                                                   CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Slider}, Path=Value}"></behaviors:InvokeCommandAction>
+                                </behaviors:EventTrigger>
+                            </behaviors:Interaction.Triggers>
+                        </Slider>    
+                    </DockPanel>
+                    
                 </StackPanel>
                 
                 

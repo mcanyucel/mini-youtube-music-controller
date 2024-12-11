@@ -105,6 +105,21 @@ function checkTimeInfo() {
     }
 }
 
+function checkVolume() {
+        const volumeSlider = document.querySelector('ytmusic-player-bar #sliderBar');
+        if (volumeSlider) {
+
+            const volume = volumeSlider.getAttribute('aria-valuenow');
+            window.chrome.webview.postMessage({
+                type: 'VolumeChanged',
+                volume: parseInt(volume) || 0
+            });
+        }
+        else {
+            console.error("Volume slider not found");
+        }
+}
+
 function debounce(func, wait) {
     let timeout;
     return function executedFunction(...args) {
@@ -122,6 +137,7 @@ const debouncedCheckPlayState = debounce(checkPlayState, 250);
 const debouncedCheckTimeInfo = debounce(checkTimeInfo, 100);
 const debouncedCheckRepeatState = debounce(checkRepeatState, 250);
 const debouncedCheckShuffleState = debounce(checkShuffleState, 250);
+const debouncedCheckVolume = debounce(checkVolume, 250);
 
 function isRelevantMutation(mutation) {
     try {
@@ -157,8 +173,11 @@ function isRelevantMutation(mutation) {
                 }
             }
         }
-
-        // Now only checking progress-bar for time updates
+        
+        if (mutation.target.id === 'sliderBar') {
+            return 'volume';
+        }
+        
         if (mutation.target.id === 'progress-bar') {
             return 'timeInfo';
         }
@@ -176,6 +195,7 @@ const observer = new MutationObserver((mutations) => {
     let shouldCheckTime = false;
     let shouldCheckRepeat = false;
     let shouldCheckShuffle = false;
+    let shouldCheckVolume = false;
 
     for (const mutation of mutations) {
         const mutationType = isRelevantMutation(mutation);
@@ -195,6 +215,9 @@ const observer = new MutationObserver((mutations) => {
             case 'shuffleState':
                 shouldCheckShuffle = true;
                 break;
+            case 'volume':
+                shouldCheckVolume = true;
+                break;
         }
     }
 
@@ -203,6 +226,7 @@ const observer = new MutationObserver((mutations) => {
     if (shouldCheckTime) debouncedCheckTimeInfo();
     if (shouldCheckRepeat) debouncedCheckRepeatState();
     if (shouldCheckShuffle) debouncedCheckShuffleState();
+    if (shouldCheckVolume) debouncedCheckVolume();
 });
 
 function initializeObserver(retryCount = 0, maxRetries = 5) {
@@ -223,6 +247,7 @@ function initializeObserver(retryCount = 0, maxRetries = 5) {
         checkTimeInfo();
         checkRepeatState();
         checkShuffleState();
+        checkVolume();
     } else if (retryCount < maxRetries) {
         console.log(`Player bar not ready, retrying... (${retryCount + 1}/${maxRetries})`);
         setTimeout(() => initializeObserver(retryCount + 1, maxRetries), 1000);
@@ -241,5 +266,15 @@ function seekTo(time) {
         progressBar.value = time;
         progressBar.dispatchEvent(new Event('change', { bubbles: true }));
         progressBar.dispatchEvent(new Event('immediate-value-change', { bubbles: true }));
+    }
+}
+
+// Called from the host window
+function setVolume(value) {
+    const volumeSlider = document.querySelector('ytmusic-player-bar #sliderBar');
+    if (volumeSlider) {
+        volumeSlider.value = value;
+        volumeSlider.dispatchEvent(new Event('change', { bubbles: true }));
+        volumeSlider.dispatchEvent(new Event('immediate-value-change', { bubbles: true }));
     }
 }

@@ -33,6 +33,7 @@ public sealed partial class MainWindow : IDisposable
                 await TogglePlayback();
                 break;
             case PlayerCommandType.SetVolume:
+                await SetVolume(e.Parameter);
                 break;
             case PlayerCommandType.Next:
                 await Next();
@@ -59,6 +60,14 @@ public sealed partial class MainWindow : IDisposable
         if (double.TryParse(e?.ToString(), CultureInfo.InvariantCulture, out var time))
         {
             await ExecuteScriptAsync($"seekTo({time});");
+        }
+    }
+    
+    private async Task SetVolume(object? e)
+    {
+        if (double.TryParse(e?.ToString(), CultureInfo.InvariantCulture, out var volume))
+        {
+            await ExecuteScriptAsync($"setVolume({volume});");
         }
     }
 
@@ -146,6 +155,9 @@ public sealed partial class MainWindow : IDisposable
                 case ShuffleStateMessage shuffleState:
                     HandleShuffleStateChanged(shuffleState);
                     break;
+                case VolumeInfoMessage volumeInfo:
+                    HandleVolumeInfoChanged(volumeInfo);
+                    break;
                 default:
                     Debug.WriteLine($"Unknown message type: {message.MessageType}");
                     break;
@@ -171,6 +183,11 @@ public sealed partial class MainWindow : IDisposable
     private void HandleRepeatModeChanged(RepeatModeMessage repeatMode)
     {
         _viewModel?.RepeatModeChanged(repeatMode);
+    }
+    
+    private void HandleVolumeInfoChanged(VolumeInfoMessage volumeInfo)
+    {
+        _viewModel?.VolumeInfoChanged(volumeInfo);
     }
 
     private void HandleTrackInfoChanged(TrackInfoMessage trackInfo)
