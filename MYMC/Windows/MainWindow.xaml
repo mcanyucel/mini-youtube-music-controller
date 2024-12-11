@@ -119,6 +119,7 @@
                 
                 <StackPanel Orientation="Horizontal">
                     <Button Style="{StaticResource MahApps.Styles.Button.Circle}"
+                            Command="{Binding ToggleRepeatModeCommand}"
                             Margin="16,0,0,0"
                             Width="40"
                             BorderThickness="0"

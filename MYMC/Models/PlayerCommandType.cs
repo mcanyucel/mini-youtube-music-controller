@@ -6,5 +6,6 @@ public enum PlayerCommandType
     SetVolume,
     Next,
     Previous,
-    Seek
+    Seek,
+    ToggleRepeatMode
 }

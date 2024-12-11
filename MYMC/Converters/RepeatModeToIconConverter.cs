@@ -7,7 +7,7 @@ namespace MYMC.Converters;
 
 public class RepeatModeToIconConverter : IValueConverter
 {
-    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (value is not RepeatMode mode)
         {
@@ -23,8 +23,8 @@ public class RepeatModeToIconConverter : IValueConverter
         };
     }
 
-    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        throw new NotImplementedException();
+        throw new InvalidOperationException("RepeatModeToIconConverter can only be used OneWay.");
     }
 }

@@ -1,11 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Text.Json;
 using System.Windows;
 using Microsoft.Web.WebView2.Core;
 using MYMC.Models;
-using MYMC.Services.Implementation;
 using MYMC.Services.Interface;
 using MYMC.ViewModels;
 
@@ -45,6 +43,9 @@ public sealed partial class MainWindow : IDisposable
             case PlayerCommandType.Seek:
                 await SeekToTime(e.Parameter);
                 break;
+            case PlayerCommandType.ToggleRepeatMode:
+                await ToggleRepeatMode();
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(e), actualValue: e.CommandType, "Unknown command type");
         }
@@ -61,6 +62,11 @@ public sealed partial class MainWindow : IDisposable
     private async Task Next()
     {
         await ExecuteScriptAsync("document.querySelector('ytmusic-player-bar tp-yt-paper-icon-button[aria-label=\"Next\"]').click();");
+    }
+    
+    private async Task ToggleRepeatMode()
+    {
+        await ExecuteScriptAsync("document.querySelector('ytmusic-player-bar tp-yt-paper-icon-button[class=\"repeat style-scope ytmusic-player-bar\"').click();");
     }
     
     private async Task Previous()

@@ -15,6 +15,7 @@ public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
     [NotifyCanExecuteChangedFor(nameof(TogglePlaybackCommand))]
     [NotifyCanExecuteChangedFor(nameof(PreviousCommand))]
     [NotifyCanExecuteChangedFor(nameof(NextCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ToggleRepeatModeCommand))]
     private bool _isBusy = true;
     
     [ObservableProperty] private bool _isPlaying;
@@ -71,6 +72,12 @@ public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
     private void TogglePlayback()
     {
         commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.TogglePlayback));
+    }
+
+    [RelayCommand(CanExecute = nameof(IsBusyCanExecute))]
+    private void ToggleRepeatMode()
+    {
+        commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.ToggleRepeatMode));
     }
     
     [RelayCommand(CanExecute = nameof(IsBusyCanExecute))]
