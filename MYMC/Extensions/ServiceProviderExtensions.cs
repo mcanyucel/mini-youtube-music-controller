@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using MYMC.Services.Implementation;
 using MYMC.Services.Interface;
-using MYMC.Settings;
 using MYMC.ViewModels;
 using MYMC.Windows;
 using MYMC.Windows.Factory;
@@ -28,9 +27,16 @@ public static class ServiceProviderExtensions
     {
         var viewModelMapping = new Dictionary<Type, Type>
         {
-            { typeof(MainViewModel), typeof(MainWindow) }
+            { typeof(MainViewModel), typeof(MainWindow) },
+            { typeof(LyricsViewModel), typeof(LyricsWindow) }
         };
         services.AddSingleton<IDictionary<Type, Type>>(viewModelMapping);
+        return services;
+    }
+
+    public static ServiceCollection ConfigureLyricsServices(this ServiceCollection services)
+    {
+        services.AddSingleton<ILyricsService, GeniusService>();
         return services;
     }
     

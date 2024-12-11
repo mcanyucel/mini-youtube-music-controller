@@ -20,6 +20,7 @@ public partial class MainViewModel : ObservableObject, IViewModel
     [NotifyCanExecuteChangedFor(nameof(ToggleShuffleCommand))]
     [NotifyCanExecuteChangedFor(nameof(ToggleLikeCommand))]
     [NotifyCanExecuteChangedFor(nameof(DislikeCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ShowLyricsWindowCommand))]
     private bool _isBusy = true;
     
     [ObservableProperty] private bool _isPlaying;
@@ -61,17 +62,11 @@ public partial class MainViewModel : ObservableObject, IViewModel
         _commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.SetCompactMode, value));
     }
 
-    [ObservableProperty]
-    private TrackInfo? _trackInfo;
-
+    [ObservableProperty] private TrackInfo? _trackInfo;
     [ObservableProperty] private bool _isSeeking;
-    
     [ObservableProperty] private bool _isAdjustingVolume;
-
     [ObservableProperty] private TimeInfo? _timeInfo;
-
     [ObservableProperty] private RepeatMode _repeatMode = RepeatMode.Off;
-    
     [ObservableProperty] private int _volume = 100;
 
     private int _previousVolume;
@@ -83,8 +78,8 @@ public partial class MainViewModel : ObservableObject, IViewModel
     {
         _logger = logger;
         _commandBus = commandBus;
-        _userSettings = UserSettings.Load();
         
+        _userSettings = UserSettings.Load();
         ApplyUserSettings();
     }
     
@@ -186,6 +181,12 @@ public partial class MainViewModel : ObservableObject, IViewModel
     {
         // unlike 'like', 'dislike' is not a toggle - it immediately dislikes the track and skips to the next one
         _commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.Dislike));
+    }
+
+    [RelayCommand(CanExecute = nameof(IsBusyCanExecute))]
+    private void ShowLyricsWindow()
+    {
+        
     }
     
     private bool IsBusyCanExecute() => !IsBusy;

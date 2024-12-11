@@ -19,6 +19,7 @@ public partial class App
         return new ServiceCollection()
             .ConfigureLogger()
             .ConfigureCoreServices()
+            .ConfigureLyricsServices()
             .ConfigureViewModels()
             .ConfigureWindows()
             .ConfigureViewModelWindowMapping()
