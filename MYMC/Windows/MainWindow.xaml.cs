@@ -50,6 +50,9 @@ public sealed partial class MainWindow : IDisposable
             case PlayerCommandType.ToggleShuffle:
                 await ToggleShuffle();
                 break;
+            case PlayerCommandType.SetCompactMode:
+                SetCompactMode(e.Parameter);
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(e), actualValue: e.CommandType, "Unknown command type");
         }
@@ -94,6 +97,22 @@ public sealed partial class MainWindow : IDisposable
     private async Task TogglePlayback()
     {
         await ExecuteScriptAsync("document.querySelector('ytmusic-player-bar tp-yt-paper-icon-button[aria-label=\"Play\"], ytmusic-player-bar tp-yt-paper-icon-button[aria-label=\"Pause\"]').click();");
+    }
+
+    private void SetCompactMode(object? e)
+    {
+        if (e is not bool isCompact) return;
+        
+        if (isCompact)
+        {
+            WindowState = WindowState.Normal;
+            Height = 132;
+            Width = 667;
+        }
+        else
+        {
+            WindowState = WindowState.Maximized;
+        }
     }
     
     private async Task ExecuteScriptAsync(string script)

@@ -13,7 +13,6 @@
                  Loaded="MainWindow_OnLoaded"
                  Topmost="{Binding TopMost}"
                  mc:Ignorable="d"
-                 MinWidth="640"
                  Title="Youtube Music" Height="450" Width="640">
     <mah:MetroWindow.Resources>
         <converters:FractionConverter x:Key="FractionConverter" />
@@ -22,12 +21,17 @@
         <converters:BooleanToShuffleIconConverter x:Key="BooleanToShuffleIconConverter"></converters:BooleanToShuffleIconConverter>
         <converters:IntegerToVolumeIconConverter x:Key="IntegerToVolumeIconConverter"></converters:IntegerToVolumeIconConverter>
         <converters:BooleanToPinIconConverter x:Key="BooleanToPinIconConverter"></converters:BooleanToPinIconConverter>
+        <converters:BooleanToCompactIconConverter x:Key="BooleanToCompactIconConverter"></converters:BooleanToCompactIconConverter>
     </mah:MetroWindow.Resources>
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
             <ToggleButton IsChecked="{Binding TopMost}"
                           ToolTip="Always on Top">
                 <iconpacks:PackIconMaterial Kind="{Binding TopMost, Converter={StaticResource BooleanToPinIconConverter}}"></iconpacks:PackIconMaterial>
+            </ToggleButton>
+            <ToggleButton IsChecked="{Binding IsCompact}"
+                          ToolTip="Compact View">
+                <iconpacks:PackIconMaterial Kind="{Binding IsCompact, Converter={StaticResource BooleanToCompactIconConverter}}"></iconpacks:PackIconMaterial>
             </ToggleButton>
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>

@@ -25,8 +25,8 @@ public partial class MainViewModel : ObservableObject, IViewModel
     [ObservableProperty] private bool _isShuffled;
     
     
-    private bool _topMost;
 
+    private bool _topMost;
     public bool TopMost
     {
         get => _topMost;
@@ -39,8 +39,26 @@ public partial class MainViewModel : ObservableObject, IViewModel
         }
     }
 
-    [ObservableProperty] private bool _isCompact;
-    
+    private bool _isCompact;
+
+    public bool IsCompact
+    {
+        get => _isCompact;
+        set
+        {
+            if (!SetProperty(ref _isCompact, value)) return;
+            
+            _userSettings.IsCompactMode = value;
+            _userSettings.Save();
+            ApplyCompactModeChange(value);
+        }
+    }
+
+    private void ApplyCompactModeChange(bool value)
+    {
+        _commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.SetCompactMode, value));
+    }
+
     [ObservableProperty]
     private TrackInfo? _trackInfo;
 
