@@ -1,0 +1,6 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Publish To Folder" type="DotNetFolderPublish" factoryName="Publish to folder">
+    <riderPublish configuration="Release" platform="Any CPU" runtime="win-x64" target_folder="$PROJECT_DIR$/MYMC/Installer/bin" target_framework="net9.0-windows" uuid_high="3602266801450926327" uuid_low="-6250588673386953451" />
+    <method v="2" />
+  </configuration>
+</component>
