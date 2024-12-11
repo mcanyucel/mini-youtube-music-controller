@@ -7,7 +7,7 @@ namespace MYMC.Windows.Factory;
 
 public class WindowFactory(IDictionary<Type, Type> viewModelMapping, IViewModelFactory viewModelFactory, ILogger logger, IPlayerCommandBus commandBus) : IWindowFactory
 {
-    public Window CreateWindowForViewModel<TViewModel>() where TViewModel : IViewModel
+    public Window CreateWindowForViewModel<TViewModel>(IDictionary<string, object>? parameters) where TViewModel : IViewModel
     {
         var viewModelType = typeof(TViewModel);
         if (!viewModelMapping.TryGetValue(viewModelType, out var windowType))
@@ -24,7 +24,7 @@ public class WindowFactory(IDictionary<Type, Type> viewModelMapping, IViewModelF
 
         if (Activator.CreateInstance(windowType, commandBus) is Window window)
         {
-            var viewModel = viewModelFactory.Create<TViewModel>();
+            var viewModel = viewModelFactory.Create<TViewModel>(parameters);
             window.DataContext = viewModel;
             return window;
         }

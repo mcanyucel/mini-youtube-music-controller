@@ -214,10 +214,17 @@
                                                                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Slider}, Path=Value}"></behaviors:InvokeCommandAction>
                                 </behaviors:EventTrigger>
                             </behaviors:Interaction.Triggers>
-                        </Slider>    
+                        </Slider>
                     </DockPanel>
                     </Border>
                 </StackPanel>
+                <Button Command="{Binding ShowLyricsWindowCommand}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        ToolTip="Show Lyrics">
+                    <iconpacks:PackIconFontAwesome Width="36" Height="36"
+                        Kind="MusicSolid"></iconpacks:PackIconFontAwesome>
+                </Button>
             </StackPanel>
         </Grid>
 

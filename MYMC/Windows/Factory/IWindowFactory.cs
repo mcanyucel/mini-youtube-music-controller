@@ -5,5 +5,5 @@ namespace MYMC.Windows.Factory;
 
 public interface IWindowFactory
 {
-    Window CreateWindowForViewModel<TViewModel>() where TViewModel: IViewModel;
+    Window CreateWindowForViewModel<TViewModel>(IDictionary<string, object>? parameters = null) where TViewModel: IViewModel;
 }

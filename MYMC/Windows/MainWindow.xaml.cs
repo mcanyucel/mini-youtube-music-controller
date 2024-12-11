@@ -123,7 +123,7 @@ public sealed partial class MainWindow : IDisposable
         {
             WindowState = WindowState.Normal;
             Height = 132;
-            Width = 667;
+            Width = 594;
         }
         else
         {
@@ -156,7 +156,6 @@ public sealed partial class MainWindow : IDisposable
         var environment = await CoreWebView2Environment.CreateAsync(userDataFolder: userDataFolder);
         await WebView.EnsureCoreWebView2Async(environment);
         WebView.CoreWebView2.WebMessageReceived += HandleWebMessage;        
-        WebView.CoreWebView2.OpenDevToolsWindow();
         WebView.Source = new Uri("https://music.youtube.com/");
     }
 

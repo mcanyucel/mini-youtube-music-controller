@@ -16,7 +16,7 @@ public sealed class WindowService(IViewModelFactory viewModelFactory, IWindowFac
         }
         else
         {
-            var newWindow = windowFactory.CreateWindowForViewModel<TViewModel>();
+            var newWindow = windowFactory.CreateWindowForViewModel<TViewModel>(parameters);
             SubscribeToWindowClosed(newWindow, hash);
             newWindow.Show();
             _openWindows.Add(hash, newWindow);

@@ -73,12 +73,14 @@ public partial class MainViewModel : ObservableObject, IViewModel
     private readonly ILogger _logger;
     private readonly IPlayerCommandBus _commandBus;
     private readonly UserSettings _userSettings;
+    private readonly IWindowService _windowService;
     
-    public MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
+    public MainViewModel(ILogger logger, IPlayerCommandBus commandBus, IWindowService windowService)
     {
         _logger = logger;
         _commandBus = commandBus;
-        
+        _windowService = windowService;
+
         _userSettings = UserSettings.Load();
         ApplyUserSettings();
     }
@@ -186,7 +188,13 @@ public partial class MainViewModel : ObservableObject, IViewModel
     [RelayCommand(CanExecute = nameof(IsBusyCanExecute))]
     private void ShowLyricsWindow()
     {
-        
+        if (TrackInfo?.Title == null || TrackInfo?.Artist == null) return;
+        var parameters = new Dictionary<string, object>
+        {
+            {IViewModel.SongNameParameter, TrackInfo?.Title!},
+            {IViewModel.ArtistParameter, TrackInfo?.Artist!}
+        };
+        _windowService.ShowWindow<LyricsViewModel>(parameters);
     }
     
     private bool IsBusyCanExecute() => !IsBusy;
