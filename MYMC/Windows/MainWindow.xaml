@@ -162,6 +162,16 @@
                             <iconpacks:PackIconMaterial Kind="{Binding RepeatMode, Converter={StaticResource RepeatModeToIconConverter}}"></iconpacks:PackIconMaterial>
                         </Button>
                         <Button Background="Transparent"
+                                ToolTip="Dislike and Skip"
+                                BorderThickness="0"
+                                Margin="0"
+                                VerticalAlignment="Top"
+                                Command="{Binding DislikeCommand}"
+                                Width="30"
+                                Height="30">
+                            <iconpacks:PackIconMaterial Kind="ThumbDownOutline"></iconpacks:PackIconMaterial>
+                        </Button>
+                        <Button Background="Transparent"
                                 Width="30"
                                 Height="30"
                                 Margin="0"

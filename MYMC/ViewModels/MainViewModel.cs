@@ -19,6 +19,7 @@ public partial class MainViewModel : ObservableObject, IViewModel
     [NotifyCanExecuteChangedFor(nameof(ToggleRepeatModeCommand))]
     [NotifyCanExecuteChangedFor(nameof(ToggleShuffleCommand))]
     [NotifyCanExecuteChangedFor(nameof(ToggleLikeCommand))]
+    [NotifyCanExecuteChangedFor(nameof(DislikeCommand))]
     private bool _isBusy = true;
     
     [ObservableProperty] private bool _isPlaying;
@@ -178,6 +179,13 @@ public partial class MainViewModel : ObservableObject, IViewModel
     private void ToggleLike()
     {
         _commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.ToggleLike));
+    }
+
+    [RelayCommand(CanExecute = nameof(IsBusyCanExecute))]
+    private void Dislike()
+    {
+        // unlike 'like', 'dislike' is not a toggle - it immediately dislikes the track and skips to the next one
+        _commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.Dislike));
     }
     
     private bool IsBusyCanExecute() => !IsBusy;

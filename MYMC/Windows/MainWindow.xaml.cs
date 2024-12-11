@@ -56,6 +56,9 @@ public sealed partial class MainWindow : IDisposable
             case PlayerCommandType.ToggleLike:
                 await ToggleLike();
                 break;
+            case PlayerCommandType.Dislike:
+                await Dislike();
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(e), actualValue: e.CommandType, "Unknown command type");
         }
@@ -64,6 +67,11 @@ public sealed partial class MainWindow : IDisposable
     private async Task ToggleLike()
     {
         await ExecuteScriptAsync("document.querySelector('button[aria-label=\"Like\"]')?.click();");
+    }
+    
+    private async Task Dislike()
+    {
+        await ExecuteScriptAsync("document.querySelector('button[aria-label=\"Dislike\"]')?.click();");
     }
 
     private async Task SeekToTime(object? e)
