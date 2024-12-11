@@ -7,5 +7,6 @@ public enum PlayerCommandType
     Next,
     Previous,
     Seek,
-    ToggleRepeatMode
+    ToggleRepeatMode,
+    ToggleShuffle
 }

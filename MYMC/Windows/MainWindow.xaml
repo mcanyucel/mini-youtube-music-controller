@@ -18,6 +18,7 @@
         <converters:FractionConverter x:Key="FractionConverter" />
         <converters:PlaybackStateToIconConverter x:Key="PlaybackStateToIconConverter" />
         <converters:RepeatModeToIconConverter x:Key="RepeatModeToIconConverter" />
+        <converters:BooleanToShuffleIconConverter x:Key="BooleanToShuffleIconConverter"></converters:BooleanToShuffleIconConverter>
     </mah:MetroWindow.Resources>
     <DockPanel LastChildFill="True">
 
@@ -120,11 +121,20 @@
                 <StackPanel Orientation="Horizontal">
                     <Button Style="{StaticResource MahApps.Styles.Button.Circle}"
                             Command="{Binding ToggleRepeatModeCommand}"
+                            ToolTip="Repeat"
                             Margin="16,0,0,0"
                             Width="40"
                             BorderThickness="0"
                             Height="40">
                         <iconpacks:PackIconMaterial Kind="{Binding RepeatMode, Converter={StaticResource RepeatModeToIconConverter}}"></iconpacks:PackIconMaterial>
+                    </Button>
+                    <Button Style="{StaticResource MahApps.Styles.Button.Circle}"
+                            Width="40"
+                            Height="40"
+                            Command="{Binding ToggleShuffleCommand}"
+                            ToolTip="Shuffle"
+                            BorderThickness="0">
+                        <iconpacks:PackIconMaterial Kind="{Binding IsShuffled, Converter={StaticResource BooleanToShuffleIconConverter}}"></iconpacks:PackIconMaterial>
                     </Button>
                 </StackPanel>
                 

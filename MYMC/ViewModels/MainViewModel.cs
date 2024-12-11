@@ -16,9 +16,12 @@ public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
     [NotifyCanExecuteChangedFor(nameof(PreviousCommand))]
     [NotifyCanExecuteChangedFor(nameof(NextCommand))]
     [NotifyCanExecuteChangedFor(nameof(ToggleRepeatModeCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ToggleShuffleCommand))]
     private bool _isBusy = true;
     
     [ObservableProperty] private bool _isPlaying;
+    
+    [ObservableProperty] private bool _isShuffled;
 
     [ObservableProperty]
     private TrackInfo? _trackInfo;
@@ -33,6 +36,11 @@ public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
     public void PlaybackStateChanged(PlayStateMessage message)
     {
         IsPlaying = message.IsPlaying;
+    }
+    
+    public void ShuffleStateChanged(ShuffleStateMessage message)
+    {
+        IsShuffled = message.IsShuffled;
     }
     
     public void TrackInfoChanged(TrackInfoMessage message)
@@ -78,6 +86,12 @@ public partial class MainViewModel(ILogger logger, IPlayerCommandBus commandBus)
     private void ToggleRepeatMode()
     {
         commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.ToggleRepeatMode));
+    }
+
+    [RelayCommand(CanExecute = nameof(IsBusyCanExecute))]
+    private void ToggleShuffle()
+    {
+        commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.ToggleShuffle));
     }
     
     [RelayCommand(CanExecute = nameof(IsBusyCanExecute))]

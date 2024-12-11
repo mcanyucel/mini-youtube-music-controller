@@ -24,6 +24,21 @@ function checkRepeatState() {
     }
 }
 
+function checkShuffleState() {
+    const playerBar = document.querySelector('ytmusic-player-bar');
+    if (playerBar) {
+        // the shuffle button does not have any state information, but the bar has shuffle-on attribute when it is on
+        const shuffleOn = playerBar.hasAttribute('shuffle-on');
+        window.chrome.webview.postMessage({
+            type: 'ShuffleStateChanged',
+            isShuffleOn: shuffleOn
+        });
+    } 
+    else {
+        console.error("Player bar not found");
+    }
+}
+
 function checkSongInfo() {
     try {
         const titleElement = document.querySelector('ytmusic-player-bar .title');
@@ -106,6 +121,7 @@ const debouncedCheckSongInfo = debounce(checkSongInfo, 250);
 const debouncedCheckPlayState = debounce(checkPlayState, 250);
 const debouncedCheckTimeInfo = debounce(checkTimeInfo, 100);
 const debouncedCheckRepeatState = debounce(checkRepeatState, 250);
+const debouncedCheckShuffleState = debounce(checkShuffleState, 250);
 
 function isRelevantMutation(mutation) {
     try {
@@ -125,6 +141,11 @@ function isRelevantMutation(mutation) {
             if (label === 'Repeat off' || label === 'Repeat all' || label === 'Repeat one') {
                 return 'repeatState';
             }
+        }
+        
+        if (mutation.type === 'attributes' &&
+        mutation.attributeName === 'shuffle-on') {
+            return 'shuffleState';
         }
 
         if (mutation.target.nodeType === Node.ELEMENT_NODE) {
@@ -154,6 +175,7 @@ const observer = new MutationObserver((mutations) => {
     let shouldCheckSong = false;
     let shouldCheckTime = false;
     let shouldCheckRepeat = false;
+    let shouldCheckShuffle = false;
 
     for (const mutation of mutations) {
         const mutationType = isRelevantMutation(mutation);
@@ -170,6 +192,9 @@ const observer = new MutationObserver((mutations) => {
             case 'repeatState':
                 shouldCheckRepeat = true;
                 break;
+            case 'shuffleState':
+                shouldCheckShuffle = true;
+                break;
         }
     }
 
@@ -177,6 +202,7 @@ const observer = new MutationObserver((mutations) => {
     if (shouldCheckSong) debouncedCheckSongInfo();
     if (shouldCheckTime) debouncedCheckTimeInfo();
     if (shouldCheckRepeat) debouncedCheckRepeatState();
+    if (shouldCheckShuffle) debouncedCheckShuffleState();
 });
 
 function initializeObserver(retryCount = 0, maxRetries = 5) {
@@ -196,6 +222,7 @@ function initializeObserver(retryCount = 0, maxRetries = 5) {
         checkSongInfo();
         checkTimeInfo();
         checkRepeatState();
+        checkShuffleState();
     } else if (retryCount < maxRetries) {
         console.log(`Player bar not ready, retrying... (${retryCount + 1}/${maxRetries})`);
         setTimeout(() => initializeObserver(retryCount + 1, maxRetries), 1000);

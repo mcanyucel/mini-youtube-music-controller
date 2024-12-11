@@ -46,6 +46,9 @@ public sealed partial class MainWindow : IDisposable
             case PlayerCommandType.ToggleRepeatMode:
                 await ToggleRepeatMode();
                 break;
+            case PlayerCommandType.ToggleShuffle:
+                await ToggleShuffle();
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(e), actualValue: e.CommandType, "Unknown command type");
         }
@@ -67,6 +70,11 @@ public sealed partial class MainWindow : IDisposable
     private async Task ToggleRepeatMode()
     {
         await ExecuteScriptAsync("document.querySelector('ytmusic-player-bar tp-yt-paper-icon-button[class=\"repeat style-scope ytmusic-player-bar\"').click();");
+    }
+
+    private async Task ToggleShuffle()
+    {
+        await ExecuteScriptAsync("document.querySelector('ytmusic-player-bar tp-yt-paper-icon-button[class=\"shuffle style-scope ytmusic-player-bar\"').click();");
     }
     
     private async Task Previous()
@@ -135,6 +143,9 @@ public sealed partial class MainWindow : IDisposable
                 case RepeatModeMessage repeatMode:
                     HandleRepeatModeChanged(repeatMode);
                     break;
+                case ShuffleStateMessage shuffleState:
+                    HandleShuffleStateChanged(shuffleState);
+                    break;
                 default:
                     Debug.WriteLine($"Unknown message type: {message.MessageType}");
                     break;
@@ -150,6 +161,11 @@ public sealed partial class MainWindow : IDisposable
     private void HandleTimeInfoChanged(TimeInfoMessage timeInfo)
     {
         _viewModel?.TimeInfoChanged(timeInfo);
+    }
+    
+    private void HandleShuffleStateChanged(ShuffleStateMessage shuffleState)
+    {
+        _viewModel?.ShuffleStateChanged(shuffleState);
     }
     
     private void HandleRepeatModeChanged(RepeatModeMessage repeatMode)
