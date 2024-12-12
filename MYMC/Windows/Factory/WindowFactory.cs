@@ -22,7 +22,7 @@ public class WindowFactory(IDictionary<Type, Type> viewModelMapping, IViewModelF
             throw new InvalidOperationException($"Window type {windowType} does not inherit from {typeof(Window)}");
         }
 
-        if (Activator.CreateInstance(windowType, commandBus) is Window window)
+        if (Activator.CreateInstance(windowType, commandBus, logger) is Window window)
         {
             var viewModel = viewModelFactory.Create<TViewModel>(parameters);
             window.DataContext = viewModel;

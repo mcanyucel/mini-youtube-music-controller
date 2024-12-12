@@ -1,11 +1,11 @@
-﻿using System.Diagnostics;
-using System.Globalization;
+﻿using System.Globalization;
 using System.IO;
 using System.Windows;
 using Microsoft.Web.WebView2.Core;
 using MYMC.Models;
 using MYMC.Services.Interface;
 using MYMC.ViewModels;
+using Serilog;
 
 namespace MYMC.Windows;
 
@@ -14,15 +14,17 @@ namespace MYMC.Windows;
 /// </summary>
 public sealed partial class MainWindow : IDisposable
 {
-    public MainWindow(IPlayerCommandBus commandBus)
+    public MainWindow(IPlayerCommandBus commandBus, ILogger logger)
     {
         InitializeComponent();
         _scriptsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts");
         _commandBus = commandBus;
+        _logger = logger;
         commandBus.PlayerCommandReceived += HandlePlayerCommand;
     }
 
     private readonly IPlayerCommandBus _commandBus;
+    private readonly ILogger _logger;
 
     // ReSharper disable once AsyncVoidMethod - Event handler
     private async void HandlePlayerCommand(object? sender, PlayerCommandMessage e)
@@ -139,7 +141,7 @@ public sealed partial class MainWindow : IDisposable
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Script execution failed: {ex.Message}");
+            _logger.Error(ex, "Failed to execute script: {Script}", script);
         }
     }
 
@@ -167,11 +169,9 @@ public sealed partial class MainWindow : IDisposable
 
     private void HandleWebMessage(object? sender, CoreWebView2WebMessageReceivedEventArgs e)
     {
-        Debug.WriteLine($"Received message: {e.WebMessageAsJson}");
         try
         {
             var message = YoutubeMusicMessage.FromJson(e.WebMessageAsJson);
-            Debug.WriteLine($"Parsed message type: {message.MessageType}");
             switch (message)
             {
                 case PlayStateMessage playState:
@@ -196,14 +196,13 @@ public sealed partial class MainWindow : IDisposable
                     HandleLikeStateChanged(likeState);
                     break;
                 default:
-                    Debug.WriteLine($"Unknown message type: {message.MessageType}");
+                    _logger.Error("Unknown message type: {MessageType}", message.MessageType);
                     break;
             }
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Failed to handle message: {ex.Message}");
-            Debug.WriteLine($"Message content was: {e.WebMessageAsJson}");
+            _logger.Error(ex, $"Failed to handle web message, the content was {e.WebMessageAsJson}");
         }
     }
 
@@ -251,7 +250,6 @@ public sealed partial class MainWindow : IDisposable
                 throw new FileNotFoundException($"Script file not found: {scriptPath}");
             }
             var scriptContent = await File.ReadAllTextAsync(scriptPath);
-            Debug.WriteLine("Executing script");
             await WebView.CoreWebView2.ExecuteScriptAsync(scriptContent);
     }
 

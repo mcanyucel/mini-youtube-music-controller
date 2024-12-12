@@ -49,7 +49,7 @@ public sealed class UpdateEngine
 
             var stateSeed = GenerateSecureRandomNumber();
             var appIdentity = GetApplicationIdentity();
-
+            
             var updateQueryRequest = new UpdateQueryRequest(appIdentity, stateSeed);
             var request = new HttpRequestMessage(HttpMethod.Post, UpdateUrl)
             {
