@@ -23,6 +23,7 @@
         <converters:BooleanToPinIconConverter x:Key="BooleanToPinIconConverter"></converters:BooleanToPinIconConverter>
         <converters:BooleanToCompactIconConverter x:Key="BooleanToCompactIconConverter"></converters:BooleanToCompactIconConverter>
         <converters:BooleanToLikedIconConverter x:Key="BooleanToLikedIconConverter"></converters:BooleanToLikedIconConverter>
+        <converters:MultiBusyProgressConverter x:Key="MultiBusyProgressConverter"></converters:MultiBusyProgressConverter>
     </mah:MetroWindow.Resources>
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
@@ -42,12 +43,20 @@
             <StatusBarItem Content="{Binding StatusText}"
                            Width="{Binding ElementName=StatusBar, Path=ActualWidth, Converter={StaticResource FractionConverter}, ConverterParameter=0.2}"/>
             <Separator Foreground="{DynamicResource MahApps.Brushes.Badged.Foreground}" />
-            <mah:MetroProgressBar IsIndeterminate="True"
-                                  Foreground="{DynamicResource MahApps.Brushes.Badged.Foreground}"
+            <mah:MetroProgressBar Foreground="{DynamicResource MahApps.Brushes.Badged.Foreground}"
                                   Height="15"
+                                  Minimum="0"
+                                  Maximum="100"
+                                  Value="{Binding UpdateProgress}"
                                   Width="{Binding ElementName=StatusBar, Path=ActualWidth, Converter={StaticResource FractionConverter}, ConverterParameter=0.75}"
-                                  Visibility="{Binding IsBusy, 
-            Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                  Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <mah:MetroProgressBar.IsIndeterminate>
+                    <MultiBinding Converter="{StaticResource MultiBusyProgressConverter}">
+                        <Binding Path="IsBusy"></Binding>
+                        <Binding  Path="IsDownloadingUpdate" />
+                    </MultiBinding>
+                </mah:MetroProgressBar.IsIndeterminate>
+            </mah:MetroProgressBar>
         </StatusBar>
         
         <Grid DockPanel.Dock="Bottom" Height="100">

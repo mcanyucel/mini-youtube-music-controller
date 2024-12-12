@@ -1,3 +1,5 @@
+// noinspection JSUnresolvedReference - chrome is injected by the host window
+
 function checkPlayState() {
     const playButton = document.querySelector('ytmusic-player-bar tp-yt-paper-icon-button[aria-label="Play"], ytmusic-player-bar tp-yt-paper-icon-button[aria-label="Pause"]');
 
@@ -286,7 +288,7 @@ function initializeObserver(retryCount = 0, maxRetries = 5) {
 // Start initialization
 initializeObserver();
 
-// Called from the host window
+// noinspection JSUnusedGlobalSymbols - Called from the host window
 function seekTo(time) {
     const progressBar = document.querySelector('ytmusic-player-bar #progress-bar');
     if (progressBar) {
@@ -296,7 +298,7 @@ function seekTo(time) {
     }
 }
 
-// Called from the host window
+// noinspection JSUnusedGlobalSymbols - Called from the host window
 function setVolume(value) {
     const volumeSlider = document.querySelector('ytmusic-player-bar #sliderBar');
     if (volumeSlider) {

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MYMC.AutoUpdate;
 using MYMC.Models;
 using MYMC.Services.Interface;
 using MYMC.Settings;
@@ -7,7 +8,7 @@ using Serilog;
 
 namespace MYMC.ViewModels;
 
-public partial class MainViewModel : ObservableObject, IViewModel
+public sealed partial class MainViewModel : ObservableObject, IViewModel, IDisposable
 {
     [ObservableProperty]
     private string _statusText = "Loading client...";
@@ -28,6 +29,10 @@ public partial class MainViewModel : ObservableObject, IViewModel
     [ObservableProperty] private bool _isShuffled;
 
     [ObservableProperty] private bool _isLiked;
+
+    [ObservableProperty] private bool _isDownloadingUpdate;
+    
+    [ObservableProperty] private double _updateProgress;
 
     private bool _topMost;
     public bool TopMost
@@ -74,17 +79,27 @@ public partial class MainViewModel : ObservableObject, IViewModel
     private readonly IPlayerCommandBus _commandBus;
     private readonly UserSettings _userSettings;
     private readonly IWindowService _windowService;
+    private readonly UpdateEngine _updateEngine;
+    private readonly IDialogService _dialogService;
     
-    public MainViewModel(ILogger logger, IPlayerCommandBus commandBus, IWindowService windowService)
+    public MainViewModel(ILogger logger, IPlayerCommandBus commandBus, IWindowService windowService, UpdateEngine updateEngine, IDialogService dialogService)
     {
         _logger = logger;
         _commandBus = commandBus;
         _windowService = windowService;
+        _updateEngine = updateEngine;
+        _dialogService = dialogService;
 
         _userSettings = UserSettings.Load();
+        _updateEngine.UpdateProgress += UpdateEngine_UpdateProgress;
         ApplyUserSettings();
     }
-    
+
+    private void UpdateEngine_UpdateProgress(object? sender, UpdateProgressEventArgs e)
+    {
+        UpdateProgress = e.ProgressPercentage;
+    }
+
     private void ApplyUserSettings()
     {
         TopMost = _userSettings.IsTopMost;
@@ -230,8 +245,30 @@ public partial class MainViewModel : ObservableObject, IViewModel
     }
     
     [RelayCommand]
-    private void NavigationCompleted()
+    private async Task NavigationCompleted()
     {
+        if (IsDevelopmentEnvironment())
+        {
+            _logger.Information("Skipping auto-update check in development environment.");
+        }
+        else
+        {
+            // check for updates only after the UI is fully loaded and the navigation is completed
+            StatusText = "Checking for updates...";
+            var hasUpdates = await _updateEngine.CheckForUpdates();
+            if (hasUpdates)
+            {
+                var shouldUpdate = _dialogService.ShowYesNoMessageBox("An update is available. Do you want to download it now?", "Update available");
+                if (shouldUpdate)
+                {
+                    StatusText = "Downloading update...";
+                    IsDownloadingUpdate = true;
+                    await _updateEngine.DownloadAndInstallUpdate(); // this will close the app
+                    IsDownloadingUpdate = false;
+                }
+            }
+        }
+
         IsBusy = false;
         StatusText = "Ready";
     }
@@ -242,4 +279,42 @@ public partial class MainViewModel : ObservableObject, IViewModel
         await Task.Delay(100);
         _logger.Information("Navigation starting.");
     }
+
+    private static bool IsDevelopmentEnvironment()
+    {
+        // ReSharper disable once RedundantAssignment
+        var isDevelopment = System.Diagnostics.Debugger.IsAttached;
+        
+#if DEBUG
+        isDevelopment = true;
+#endif
+
+        return isDevelopment;
+    }
+    
+    private bool _disposed;
+    private void Dispose(bool disposing)
+    {
+        if (_disposed) return;
+        if (disposing)
+        {
+            // Dispose managed resources
+            _updateEngine.UpdateProgress -= UpdateEngine_UpdateProgress;
+        }
+        // Dispose unmanaged resources
+        
+        _disposed = true;
+    }
+    
+    public void Dispose()
+    {
+        Dispose(true);
+        // GC.SuppressFinalize(this); // Uncomment if disposing unmanaged resources
+    }
+    
+    // Uncomment if disposing unmanaged resources
+    // ~MainViewModel()
+    // {
+    //     Dispose(false);
+    // }
 }

@@ -13,16 +13,19 @@ public partial class App
 {
     private IServiceProvider ServiceProvider { get; } = ConfigureServices();
 
+    public const string UpdateHttpClientName = "UpdateHttpClient";
 
     private static ServiceProvider ConfigureServices()
     {
         return new ServiceCollection()
+            .ConfigureHttpClientFactory()
             .ConfigureLogger()
             .ConfigureCoreServices()
             .ConfigureLyricsServices()
             .ConfigureViewModels()
             .ConfigureWindows()
             .ConfigureViewModelWindowMapping()
+            .AddUpdateServices()
             .BuildServiceProvider();
     }
 

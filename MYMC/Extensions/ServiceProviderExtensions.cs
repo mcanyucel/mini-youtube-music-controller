@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Microsoft.Extensions.DependencyInjection;
+using MYMC.AutoUpdate;
 using MYMC.Services.Implementation;
 using MYMC.Services.Interface;
 using MYMC.ViewModels;
@@ -40,6 +41,12 @@ public static class ServiceProviderExtensions
         return services;
     }
     
+    public static ServiceCollection ConfigureHttpClientFactory(this ServiceCollection services)
+    {
+        services.AddHttpClient();
+        return services;
+    }
+    
     public static ServiceCollection ConfigureLogger(this ServiceCollection services)
     {
         var logDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -69,6 +76,13 @@ public static class ServiceProviderExtensions
     {
         services.AddSingleton<IWindowService, WindowService>();
         services.AddSingleton<IPlayerCommandBus, PlayerCommandBus>();
+        services.AddTransient<IDialogService, DialogService>();
+        return services;
+    }
+    
+    public static ServiceCollection AddUpdateServices(this ServiceCollection services)
+    {
+        services.AddSingleton<UpdateEngine>();
         return services;
     }
 }
