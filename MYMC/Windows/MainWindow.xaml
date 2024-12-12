@@ -60,7 +60,11 @@
         </StatusBar>
         
         <Grid DockPanel.Dock="Bottom" Height="100">
-            <Slider Style="{StaticResource MahApps.Styles.Slider.Flat}"
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Slider Grid.Row="1" Style="{StaticResource MahApps.Styles.Slider.Flat}"
                     Value="{Binding TimeInfo.Progress, FallbackValue=0}"
                     Height="6"
                     VerticalAlignment="Bottom"
@@ -77,15 +81,25 @@
                     </behaviors:EventTrigger>
                 </behaviors:Interaction.Triggers>
             </Slider>
-            <StackPanel Orientation="Horizontal" Margin="8,0,0,16">
-                <Button Style="{StaticResource MahApps.Styles.Button.Circle}"
+            <Grid Grid.Row="0" Margin="8,0,0,0" VerticalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Style="{StaticResource MahApps.Styles.Button.Circle}"
                         Command="{Binding PreviousCommand}"
                         Width="36"
                         Height="36">
                     <iconpacks:PackIconMaterial HorizontalAlignment="Center" VerticalAlignment="Center"
                                                 Kind="SkipPreviousOutline" />
                 </Button>
-                <Button Style="{StaticResource MahApps.Styles.Button.Circle}"
+                <Button Grid.Column="1" Style="{StaticResource MahApps.Styles.Button.Circle}"
                         Command="{Binding TogglePlaybackCommand}"
                         Width="48" 
                         Height="48">
@@ -98,14 +112,14 @@
                         </iconpacks:PackIconMaterial.Kind>
                     </iconpacks:PackIconMaterial>
                 </Button>
-                <Button Style="{StaticResource MahApps.Styles.Button.Circle}"
+                <Button Grid.Column="2" Style="{StaticResource MahApps.Styles.Button.Circle}"
                         Command="{Binding NextCommand}"
                         Width="36"
                         Height="36">
                     <iconpacks:PackIconMaterial HorizontalAlignment="Center" VerticalAlignment="Center"
                                                 Kind="SkipNextOutline" />
                 </Button>
-                <Grid VerticalAlignment="Center" Margin="16,0,0,0">
+                <Grid Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="16,0,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
@@ -143,12 +157,12 @@
                                VerticalAlignment="Center"/>
                 </Grid>
                 
-                <StackPanel Orientation="Horizontal">
-                    <Border BorderThickness="1,0,0,0" 
+                <StackPanel Grid.Column="4" Orientation="Horizontal">
+                    <Border BorderThickness="0,0,1,0" 
                             BorderBrush="Gray" 
                             Margin="4,0,0,0"
                             Padding="4,0,4,0">
-                    <UniformGrid Rows="2" Columns="2">
+                    <UniformGrid Rows="2" Columns="3">
                         <Button Background="Transparent"
                                 ToolTip="Like"
                                 BorderThickness="0"
@@ -170,6 +184,16 @@
                                 Height="30">
                             <iconpacks:PackIconMaterial Kind="{Binding RepeatMode, Converter={StaticResource RepeatModeToIconConverter}}"></iconpacks:PackIconMaterial>
                         </Button>
+                        <Button Command="{Binding ShowLyricsWindowCommand}"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                VerticalAlignment="Bottom"
+                                Width="30"
+                                Height="30"
+                                Margin="0"
+                                ToolTip="Show Lyrics">
+                            <iconpacks:PackIconFontAwesome Kind="MusicSolid"></iconpacks:PackIconFontAwesome>
+                        </Button>
                         <Button Background="Transparent"
                                 ToolTip="Dislike and Skip"
                                 BorderThickness="0"
@@ -190,13 +214,16 @@
                                 BorderThickness="0">
                             <iconpacks:PackIconMaterial Kind="{Binding IsShuffled, Converter={StaticResource BooleanToShuffleIconConverter}}"></iconpacks:PackIconMaterial>
                         </Button>
+
                     </UniformGrid>
                         </Border>
-                    <Border BorderThickness="1,0,1,0" 
-                            BorderBrush="Gray" 
-                            Padding="4,0,4,0">
-                    <DockPanel LastChildFill="True">
-                        <Button DockPanel.Dock="Top"
+
+                    <Grid Margin="4,0,8,0" VerticalAlignment="top" Height="80">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Button Grid.Row="0" 
                                 Style="{StaticResource MahApps.Styles.Button.Circle}"
                                 Width="24"
                                 Height="24"
@@ -206,7 +233,7 @@
                             <iconpacks:PackIconMaterial Foreground="{DynamicResource MahApps.Brushes.Accent}" 
                                 Kind="{Binding Volume, Converter={StaticResource IntegerToVolumeIconConverter}}"></iconpacks:PackIconMaterial>
                         </Button>
-                        <Slider Orientation="Vertical"
+                        <Slider Grid.Row="1" Orientation="Vertical"
                                 Margin="0,4"
                                 TickPlacement="Both"
                                 Minimum="0"
@@ -224,17 +251,9 @@
                                 </behaviors:EventTrigger>
                             </behaviors:Interaction.Triggers>
                         </Slider>
-                    </DockPanel>
-                    </Border>
+                    </Grid>
                 </StackPanel>
-                <Button Command="{Binding ShowLyricsWindowCommand}"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        ToolTip="Show Lyrics">
-                    <iconpacks:PackIconFontAwesome Width="36" Height="36"
-                        Kind="MusicSolid"></iconpacks:PackIconFontAwesome>
-                </Button>
-            </StackPanel>
+            </Grid>
         </Grid>
 
         <Grid DockPanel.Dock="Top">
