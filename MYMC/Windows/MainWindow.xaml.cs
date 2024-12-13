@@ -61,9 +61,17 @@ public sealed partial class MainWindow : IDisposable
             case PlayerCommandType.Dislike:
                 await Dislike();
                 break;
+            case PlayerCommandType.GetShareableLink:
+                await GetShareableLink();
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(e), actualValue: e.CommandType, "Unknown command type");
         }
+    }
+
+    private async Task GetShareableLink()
+    {
+        await ExecuteScriptAsync("getShareUrl();");
     }
 
     private async Task ToggleLike()
@@ -159,6 +167,10 @@ public sealed partial class MainWindow : IDisposable
         await WebView.EnsureCoreWebView2Async(environment);
         WebView.CoreWebView2.WebMessageReceived += HandleWebMessage;        
         WebView.Source = new Uri("https://music.youtube.com/");
+
+#if DEBUG
+        WebView.CoreWebView2.OpenDevToolsWindow();
+#endif
     }
 
     // ReSharper disable once AsyncVoidMethod - Event handler
@@ -194,6 +206,9 @@ public sealed partial class MainWindow : IDisposable
                     break;
                 case LikeStateMessage likeState:
                     HandleLikeStateChanged(likeState);
+                    break;
+                case ShareUrlResultMessage shareUrlResult:
+                    HandleShareUrlResult(shareUrlResult);
                     break;
                 default:
                     _logger.Error("Unknown message type: {MessageType}", message.MessageType);
@@ -239,6 +254,11 @@ public sealed partial class MainWindow : IDisposable
     private void HandlePlayStateChange(PlayStateMessage message)
     {
         _viewModel?.PlaybackStateChanged(message);
+    }
+    
+    private void HandleShareUrlResult(ShareUrlResultMessage message)
+    {
+        _viewModel?.ShareUrlResult(message);
     }
 
 

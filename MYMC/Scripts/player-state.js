@@ -307,3 +307,97 @@ function setVolume(value) {
         volumeSlider.dispatchEvent(new Event('immediate-value-change', { bubbles: true }));
     }
 }
+
+async function getShareUrl() {
+    const playerBar = document.querySelector('ytmusic-player-bar');
+    if (!playerBar) {
+        window.chrome.webview.postMessage({
+            type: 'ShareUrlResult',
+            isSuccess: false,
+            url: null,
+            error: 'Player bar not found'
+        });
+        return;
+    }
+
+    // Create and dispatch a context menu event (right-click)
+    const contextMenuEvent = new MouseEvent('contextmenu', {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+        button: 2,
+        buttons: 2
+    });
+    playerBar.dispatchEvent(contextMenuEvent);
+
+    // Wait for menu to open
+    await new Promise(resolve => setTimeout(resolve, 250));
+
+    // Look for all menu items and find the one with "Share" text
+    const menuItems = document.querySelectorAll('ytmusic-menu-navigation-item-renderer');
+    const shareItem = Array.from(menuItems).find(item => {
+        const textElement = item.querySelector('yt-formatted-string.text');
+        return textElement && textElement.textContent.trim() === 'Share';
+    });
+
+    if (!shareItem) {
+        window.chrome.webview.postMessage({
+            type: 'ShareUrlResult',
+            isSuccess: false,
+            url: null,
+            error: 'Share menu item not found'
+        });
+        return;
+    }
+
+    const shareLink = shareItem.querySelector('a.yt-simple-endpoint');
+    if (!shareLink) {
+        window.chrome.webview.postMessage({
+            type: 'ShareUrlResult',
+            isSuccess: false,
+            url: null,
+            error: 'Share link element not found'
+        });
+        return;
+    }
+
+    shareLink.click();
+    // Wait for share dialog to appear
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    // Get the URL from the input field
+    const urlInput = document.querySelector('#share-url');
+    if (!urlInput) {
+        window.chrome.webview.postMessage({
+            type: 'ShareUrlResult',
+            isSuccess: false,
+            url: null,
+            error: 'URL input not found'
+        });
+        return;
+    }
+
+    const shareUrl = urlInput.value;
+    if (!shareUrl) {
+        window.chrome.webview.postMessage({
+            type: 'ShareUrlResult',
+            isSuccess: false,
+            url: null,
+            error: 'URL is empty'
+        });
+        return;
+    }
+    
+    window.chrome.webview.postMessage({
+        type: 'ShareUrlResult',
+        isSuccess: true,
+        url: shareUrl,
+        error: null
+    });
+
+    // Close dialog
+    const closeButton = document.querySelector('tp-yt-paper-dialog .close-icon');
+    if (closeButton) {
+        closeButton.click();
+    }
+}

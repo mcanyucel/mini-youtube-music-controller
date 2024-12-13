@@ -77,6 +77,7 @@ public static class ServiceProviderExtensions
         services.AddSingleton<IWindowService, WindowService>();
         services.AddSingleton<IPlayerCommandBus, PlayerCommandBus>();
         services.AddTransient<IDialogService, DialogService>();
+        services.AddSingleton<ISystemService, SystemService>();
         return services;
     }
     
