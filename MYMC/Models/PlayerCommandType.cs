@@ -11,5 +11,6 @@ public enum PlayerCommandType
     ToggleShuffle,
     SetCompactMode,
     ToggleLike,
-    Dislike
+    Dislike,
+    GetShareableLink,
 }

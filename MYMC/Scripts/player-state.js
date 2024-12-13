@@ -307,3 +307,83 @@ function setVolume(value) {
         volumeSlider.dispatchEvent(new Event('immediate-value-change', { bubbles: true }));
     }
 }
+
+async function getShareUrl() {
+    const playerBar = document.querySelector('ytmusic-player-bar');
+    if (playerBar) {
+        // Create and dispatch a context menu event (right-click)
+        const contextMenuEvent = new MouseEvent('contextmenu', {
+            bubbles: true,
+            cancelable: true,
+            view: window,
+            button: 2,
+            buttons: 2
+        });
+        playerBar.dispatchEvent(contextMenuEvent);
+
+        // Wait for menu to open
+        await new Promise(resolve => setTimeout(resolve, 250));
+    }
+    else {
+        console.error("Player bar not found");
+        return;
+    }
+
+    // Look for all menu items and find the one with "Share" text
+    const menuItems = document.querySelectorAll('ytmusic-menu-navigation-item-renderer');
+    const shareItem = Array.from(menuItems).find(item => {
+        const textElement = item.querySelector('yt-formatted-string.text');
+        return textElement && textElement.textContent.trim() === 'Share';
+    });
+
+    if (shareItem) {
+        const shareLink = shareItem.querySelector('a.yt-simple-endpoint');
+        if (shareLink) {
+            shareLink.click();
+            // Wait for share dialog to appear
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            // Get the URL from the input field
+            const urlInput = document.querySelector('#share-url');
+            if (urlInput) {
+                const shareUrl = urlInput.value;
+                // Post message back to the app
+                window.chrome.webview.postMessage({
+                    type: 'ShareUrlCopied',
+                    url: shareUrl
+                });
+
+                // Click the copy button
+                const copyButton = document.querySelector('button.yt-spec-button-shape-next--call-to-action');
+                if (copyButton) {
+                    copyButton.click();
+
+                    // Move focus away from the input before closing
+                    const dialog = document.querySelector('tp-yt-paper-dialog');
+                    if (dialog) {
+                        // Focus the dialog itself (which is a valid focusable element due to tabindex="-1")
+                        dialog.focus();
+                    }
+
+                    // Close dialog
+                    const closeButton = document.querySelector('tp-yt-paper-dialog .close-icon');
+                    if (closeButton) {
+                        closeButton.click();
+                    }
+                }
+                else {
+                    console.error("Copy button not found");
+                }
+            }
+            else {
+                console.error("URL input not found");
+            }
+        }
+        else {
+            console.error("Share link element not found");
+        }
+    }
+    else {
+        console.error("Share menu item not found");
+    }
+}

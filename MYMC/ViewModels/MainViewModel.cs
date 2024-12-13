@@ -22,6 +22,7 @@ public sealed partial class MainViewModel : ObservableObject, IViewModel, IDispo
     [NotifyCanExecuteChangedFor(nameof(ToggleLikeCommand))]
     [NotifyCanExecuteChangedFor(nameof(DislikeCommand))]
     [NotifyCanExecuteChangedFor(nameof(ShowLyricsWindowCommand))]
+    [NotifyCanExecuteChangedFor(nameof(CopyShareUrlCommand))]
     private bool _isBusy = true;
     
     [ObservableProperty] private bool _isPlaying;
@@ -81,14 +82,16 @@ public sealed partial class MainViewModel : ObservableObject, IViewModel, IDispo
     private readonly IWindowService _windowService;
     private readonly UpdateEngine _updateEngine;
     private readonly IDialogService _dialogService;
+    private readonly ISystemService _systemService;
     
-    public MainViewModel(ILogger logger, IPlayerCommandBus commandBus, IWindowService windowService, UpdateEngine updateEngine, IDialogService dialogService)
+    public MainViewModel(ILogger logger, IPlayerCommandBus commandBus, IWindowService windowService, UpdateEngine updateEngine, IDialogService dialogService, ISystemService systemService)
     {
         _logger = logger;
         _commandBus = commandBus;
         _windowService = windowService;
         _updateEngine = updateEngine;
         _dialogService = dialogService;
+        _systemService = systemService;
 
         _userSettings = UserSettings.Load();
         _updateEngine.UpdateProgress += UpdateEngine_UpdateProgress;
@@ -243,7 +246,13 @@ public sealed partial class MainViewModel : ObservableObject, IViewModel, IDispo
     {
         _commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.Next));
     }
-    
+
+    [RelayCommand(CanExecute = nameof(IsBusyCanExecute))]
+    private void CopyShareUrl()
+    {
+        _commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.GetShareableLink));
+    }
+
     [RelayCommand]
     private async Task NavigationCompleted()
     {
