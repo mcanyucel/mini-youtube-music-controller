@@ -207,6 +207,9 @@ public sealed partial class MainWindow : IDisposable
                 case LikeStateMessage likeState:
                     HandleLikeStateChanged(likeState);
                     break;
+                case ShareUrlResultMessage shareUrlResult:
+                    HandleShareUrlResult(shareUrlResult);
+                    break;
                 default:
                     _logger.Error("Unknown message type: {MessageType}", message.MessageType);
                     break;
@@ -251,6 +254,11 @@ public sealed partial class MainWindow : IDisposable
     private void HandlePlayStateChange(PlayStateMessage message)
     {
         _viewModel?.PlaybackStateChanged(message);
+    }
+    
+    private void HandleShareUrlResult(ShareUrlResultMessage message)
+    {
+        _viewModel?.ShareUrlResult(message);
     }
 
 

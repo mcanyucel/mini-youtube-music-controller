@@ -1,10 +1,12 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Timers;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MYMC.AutoUpdate;
 using MYMC.Models;
 using MYMC.Services.Interface;
 using MYMC.Settings;
 using Serilog;
+using Timer = System.Timers.Timer;
 
 namespace MYMC.ViewModels;
 
@@ -32,6 +34,8 @@ public sealed partial class MainViewModel : ObservableObject, IViewModel, IDispo
     [ObservableProperty] private bool _isLiked;
 
     [ObservableProperty] private bool _isDownloadingUpdate;
+    
+    [ObservableProperty] private GetShareLinkStatus _shareLinkStatus = GetShareLinkStatus.Ready;
     
     [ObservableProperty] private double _updateProgress;
 
@@ -83,6 +87,7 @@ public sealed partial class MainViewModel : ObservableObject, IViewModel, IDispo
     private readonly UpdateEngine _updateEngine;
     private readonly IDialogService _dialogService;
     private readonly ISystemService _systemService;
+    private readonly Timer _shareLinkTimer = new(5000);
     
     public MainViewModel(ILogger logger, IPlayerCommandBus commandBus, IWindowService windowService, UpdateEngine updateEngine, IDialogService dialogService, ISystemService systemService)
     {
@@ -96,6 +101,14 @@ public sealed partial class MainViewModel : ObservableObject, IViewModel, IDispo
         _userSettings = UserSettings.Load();
         _updateEngine.UpdateProgress += UpdateEngine_UpdateProgress;
         ApplyUserSettings();
+        
+        _shareLinkTimer.Elapsed += ShareLinkTimer_Elapsed;
+    }
+
+    private void ShareLinkTimer_Elapsed(object? sender, ElapsedEventArgs e)
+    {
+        _shareLinkTimer.Stop();
+        ShareLinkStatus = GetShareLinkStatus.Ready;
     }
 
     private void UpdateEngine_UpdateProgress(object? sender, UpdateProgressEventArgs e)
@@ -148,6 +161,21 @@ public sealed partial class MainViewModel : ObservableObject, IViewModel, IDispo
     public void RepeatModeChanged(RepeatModeMessage message)
     {
         RepeatMode = message.RepeatMode;
+    }
+    
+    public void ShareUrlResult(ShareUrlResultMessage message)
+    {
+        if (message is { IsSuccess: true, Url: not null })
+        {
+            _systemService.CopyToClipboard(message.Url);
+            ShareLinkStatus = GetShareLinkStatus.Success;
+        }
+        else
+        {
+            ShareLinkStatus = GetShareLinkStatus.Error;
+        }
+        
+        _shareLinkTimer.Start();
     }
 
     [RelayCommand]
@@ -250,6 +278,7 @@ public sealed partial class MainViewModel : ObservableObject, IViewModel, IDispo
     [RelayCommand(CanExecute = nameof(IsBusyCanExecute))]
     private void CopyShareUrl()
     {
+        ShareLinkStatus = GetShareLinkStatus.Loading;
         _commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.GetShareableLink));
     }
 

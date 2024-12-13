@@ -24,6 +24,7 @@
         <converters:BooleanToCompactIconConverter x:Key="BooleanToCompactIconConverter"></converters:BooleanToCompactIconConverter>
         <converters:BooleanToLikedIconConverter x:Key="BooleanToLikedIconConverter"></converters:BooleanToLikedIconConverter>
         <converters:MultiBusyProgressConverter x:Key="MultiBusyProgressConverter"></converters:MultiBusyProgressConverter>
+        <converters:EnumToGetShareLinkIconConverter x:Key="EnumToGetShareLinkIconConverter"></converters:EnumToGetShareLinkIconConverter>
     </mah:MetroWindow.Resources>
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
@@ -222,7 +223,7 @@
                                 Command="{Binding CopyShareUrlCommand}"
                                 ToolTip="Copy Link"
                                 BorderThickness="0">
-                            <iconpacks:PackIconBootstrapIcons Kind="Share"></iconpacks:PackIconBootstrapIcons>
+                            <iconpacks:PackIconBootstrapIcons Kind="{Binding ShareLinkStatus, Converter={StaticResource EnumToGetShareLinkIconConverter}}"></iconpacks:PackIconBootstrapIcons>
                         </Button>
                     </UniformGrid>
                         </Border>
