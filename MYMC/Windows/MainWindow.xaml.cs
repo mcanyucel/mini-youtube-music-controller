@@ -102,27 +102,27 @@ public sealed partial class MainWindow : IDisposable
 
     private async Task Next()
     {
-        await ExecuteScriptAsync("document.querySelector('ytmusic-player-bar tp-yt-paper-icon-button[aria-label=\"Next\"]').click();");
+        await ExecuteScriptAsync("nextTrack();");
     }
     
     private async Task ToggleRepeatMode()
     {
-        await ExecuteScriptAsync("document.querySelector('ytmusic-player-bar tp-yt-paper-icon-button[class=\"repeat style-scope ytmusic-player-bar\"').click();");
+        await ExecuteScriptAsync("toggleRepeat();");
     }
 
     private async Task ToggleShuffle()
     {
-        await ExecuteScriptAsync("document.querySelector('ytmusic-player-bar tp-yt-paper-icon-button[class=\"shuffle style-scope ytmusic-player-bar\"').click();");
+        await ExecuteScriptAsync("toggleShuffle();");
     }
     
     private async Task Previous()
     {
-        await ExecuteScriptAsync("document.querySelector('ytmusic-player-bar tp-yt-paper-icon-button[aria-label=\"Previous\"]').click();");
+        await ExecuteScriptAsync("previousTrack();");
     }
 
     private async Task TogglePlayback()
     {
-        await ExecuteScriptAsync("document.querySelector('ytmusic-player-bar tp-yt-paper-icon-button[aria-label=\"Play\"], ytmusic-player-bar tp-yt-paper-icon-button[aria-label=\"Pause\"]').click();");
+        await ExecuteScriptAsync("togglePlayback();");
     }
 
     private void SetCompactMode(object? e)

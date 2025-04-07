@@ -1,7 +1,30 @@
-// noinspection JSUnresolvedReference - chrome is injected by the host window
+// noinspection JSUnresolvedReference - chrome is injected by the host window,JSUnusedGlobalSymbols
+
+const SELECTORS = {
+    // Player Controls
+    PLAY_BUTTON: 'ytmusic-player-bar button[aria-label="Play"], ytmusic-player-bar button[aria-label="Pause"]',
+    NEXT_BUTTON: 'ytmusic-player-bar button[aria-label="Next"]',
+    PREVIOUS_BUTTON: 'ytmusic-player-bar button[aria-label="Previous"]',
+    REPEAT_BUTTON: 'ytmusic-player-bar button[aria-label^="Repeat"]', // Uses "starts with" to match all repeat states
+    SHUFFLE_BUTTON: 'ytmusic-player-bar button[aria-label^="Shuffle"]',
+
+    // State Elements
+    PLAYER_BAR: 'ytmusic-player-bar',
+    PROGRESS_BAR: 'ytmusic-player-bar #progress-bar',
+    VOLUME_SLIDER: 'ytmusic-player-bar #sliderBar',
+
+    // Song Info Elements
+    TITLE_ELEMENT: 'ytmusic-player-bar .title',
+    BYLINE_ELEMENT: 'ytmusic-player-bar .byline',
+    ALBUM_ART: 'ytmusic-player-bar img.image',
+
+    // Like/Dislike
+    LIKE_BUTTON: 'button[aria-label="Like"]',
+    DISLIKE_BUTTON: 'button[aria-label="Dislike"]'
+};
 
 function checkPlayState() {
-    const playButton = document.querySelector('ytmusic-player-bar tp-yt-paper-icon-button[aria-label="Play"], ytmusic-player-bar tp-yt-paper-icon-button[aria-label="Pause"]');
+    const playButton = document.querySelector(SELECTORS.PLAY_BUTTON);
 
     if (playButton) {
         const state = playButton.getAttribute('aria-label');
@@ -13,7 +36,7 @@ function checkPlayState() {
 }
 
 function checkLikedState() {
-    const likeButton = document.querySelector('yt-button-shape[aria-label="Like"]');
+    const likeButton = document.querySelector(SELECTORS.LIKE_BUTTON);
     
     if (likeButton) {
         const state = likeButton.getAttribute('aria-pressed');
@@ -28,7 +51,7 @@ function checkLikedState() {
 }
 
 function checkRepeatState() {
-    const repeatButton = document.querySelector('ytmusic-player-bar tp-yt-paper-icon-button[class="repeat style-scope ytmusic-player-bar"]');
+    const repeatButton = document.querySelector(SELECTORS.REPEAT_BUTTON);
     if (repeatButton) {
         const repeatMode = repeatButton.getAttribute('aria-label');
         window.chrome.webview.postMessage({
@@ -42,7 +65,7 @@ function checkRepeatState() {
 }
 
 function checkShuffleState() {
-    const playerBar = document.querySelector('ytmusic-player-bar');
+    const playerBar = document.querySelector(SELECTORS.PLAYER_BAR);
     if (playerBar) {
         // the shuffle button does not have any state information, but the bar has shuffle-on attribute when it is on
         const shuffleOn = playerBar.hasAttribute('shuffle-on');
@@ -58,9 +81,9 @@ function checkShuffleState() {
 
 function checkSongInfo() {
     try {
-        const titleElement = document.querySelector('ytmusic-player-bar .title');
-        const bylineElement = document.querySelector('ytmusic-player-bar .byline');
-        const albumArtElement = document.querySelector('ytmusic-player-bar img.image');
+        const titleElement = document.querySelector(SELECTORS.TITLE_ELEMENT);
+        const bylineElement = document.querySelector(SELECTORS.BYLINE_ELEMENT);
+        const albumArtElement = document.querySelector(SELECTORS.ALBUM_ART);
 
         const title = titleElement ? titleElement.textContent.trim() : "Unknown";
         let artist = "Unknown";
@@ -401,3 +424,24 @@ async function getShareUrl() {
         closeButton.click();
     }
 }
+
+function togglePlayback() {
+    document.querySelector(SELECTORS.PLAY_BUTTON)?.click();
+}
+
+function nextTrack() {
+    document.querySelector(SELECTORS.NEXT_BUTTON)?.click();
+}
+
+function previousTrack() {
+    document.querySelector(SELECTORS.PREVIOUS_BUTTON)?.click();
+}
+
+function toggleRepeat() {
+    document.querySelector(SELECTORS.REPEAT_BUTTON)?.click();
+}
+
+function toggleShuffle() {
+    document.querySelector(SELECTORS.SHUFFLE_BUTTON)?.click();
+}
+
