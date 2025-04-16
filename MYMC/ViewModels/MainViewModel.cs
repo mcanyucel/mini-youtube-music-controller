@@ -38,6 +38,7 @@ public sealed partial class MainViewModel : ObservableObject, IViewModel, IDispo
     [ObservableProperty] private GetShareLinkStatus _shareLinkStatus = GetShareLinkStatus.Ready;
     
     [ObservableProperty] private double _updateProgress;
+    [ObservableProperty] private List<string> _supportedAccents;
 
     private bool _topMost;
     public bool TopMost
@@ -132,6 +133,7 @@ public sealed partial class MainViewModel : ObservableObject, IViewModel, IDispo
 
         _userSettings = UserSettings.Load();
         _updateEngine.UpdateProgress += UpdateEngine_UpdateProgress;
+        SupportedAccents = _themeService.SupportedAccents;
         ApplyUserSettings();
         
         _shareLinkTimer.Elapsed += ShareLinkTimer_Elapsed;
@@ -152,6 +154,8 @@ public sealed partial class MainViewModel : ObservableObject, IViewModel, IDispo
     {
         TopMost = _userSettings.IsTopMost;
         IsCompact = _userSettings.IsCompactMode;
+        Theme = _userSettings.Theme;
+        Accent = _userSettings.Accent;
         _themeService.SetThemeAndAccent(_userSettings.Theme, _userSettings.Accent);
     }
 
@@ -355,6 +359,14 @@ public sealed partial class MainViewModel : ObservableObject, IViewModel, IDispo
     private void ToggleTheme()
     {
         Theme = Theme == IThemeService.LightThemeName ? IThemeService.DarkThemeName : IThemeService.LightThemeName;
+    }
+
+    [RelayCommand]
+    private void ToggleAccent()
+    {
+        var currentAccendIndex = SupportedAccents.IndexOf(Accent);
+        var nextAccentIndex = (currentAccendIndex + 1) % SupportedAccents.Count;
+        Accent = SupportedAccents[nextAccentIndex];
     }
 
     private static bool IsDevelopmentEnvironment()
