@@ -7,6 +7,8 @@ public class UserSettings
 {
     public bool IsTopMost { get; set; }
     public bool IsCompactMode { get; set; }
+    public string Theme { get; set; } = "Light";
+    public string Accent { get; set; } = "Blue";
     private static string SettingsPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MYMC", "settings.json");
     public static UserSettings Load()
     {

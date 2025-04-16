@@ -26,6 +26,7 @@ public partial class App
             .ConfigureWindows()
             .ConfigureViewModelWindowMapping()
             .AddUpdateServices()
+            .ConfigureThemeServices()
             .BuildServiceProvider();
     }
 

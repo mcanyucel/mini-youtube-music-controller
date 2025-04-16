@@ -25,6 +25,8 @@
         <converters:BooleanToLikedIconConverter x:Key="BooleanToLikedIconConverter"></converters:BooleanToLikedIconConverter>
         <converters:MultiBusyProgressConverter x:Key="MultiBusyProgressConverter"></converters:MultiBusyProgressConverter>
         <converters:EnumToGetShareLinkIconConverter x:Key="EnumToGetShareLinkIconConverter"></converters:EnumToGetShareLinkIconConverter>
+        <converters:ThemeToIconConverter x:Key="ThemeToIconConverter"></converters:ThemeToIconConverter>
+        <converters:AccentToBrushConverter x:Key="AccentToBrushConverter"></converters:AccentToBrushConverter>
     </mah:MetroWindow.Resources>
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
@@ -36,6 +38,17 @@
                           ToolTip="Compact View">
                 <iconpacks:PackIconMaterial Kind="{Binding IsCompact, Converter={StaticResource BooleanToCompactIconConverter}}"></iconpacks:PackIconMaterial>
             </ToggleButton>
+            <Button Command="{Binding ToggleThemeCommand}" 
+                    ToolTip="{Binding Theme}">
+                <iconpacks:PackIconForkAwesome Kind="{Binding Theme, Converter={StaticResource ThemeToIconConverter}}"></iconpacks:PackIconForkAwesome>
+            </Button>
+            <Button Command="{Binding ToggleAccentCommand}"
+                    ToolTip="{Binding Accent}">
+                <Ellipse Width="16" Height="16"
+                         Fill="{Binding Accent, Converter={StaticResource AccentToBrushConverter}}"
+                         StrokeThickness="1"
+                         Stroke="Black"></Ellipse>
+            </Button>
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
     <DockPanel LastChildFill="True">

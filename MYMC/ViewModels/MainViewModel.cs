@@ -38,6 +38,7 @@ public sealed partial class MainViewModel : ObservableObject, IViewModel, IDispo
     [ObservableProperty] private GetShareLinkStatus _shareLinkStatus = GetShareLinkStatus.Ready;
     
     [ObservableProperty] private double _updateProgress;
+    [ObservableProperty] private List<string> _supportedAccents;
 
     private bool _topMost;
     public bool TopMost
@@ -51,6 +52,35 @@ public sealed partial class MainViewModel : ObservableObject, IViewModel, IDispo
             _userSettings.Save();
         }
     }
+
+    private string _theme = IThemeService.LightThemeName;
+    public string Theme
+    {
+        get => _theme;
+        private set
+        {
+            if (!SetProperty(ref _theme, value)) return;
+            
+            _userSettings.Theme = value;
+            _userSettings.Save();
+            _themeService.SetThemeAndAccent(value, Accent);
+        }
+    }
+    
+    private string _accent = IThemeService.DefaultAccentName;
+    public string Accent
+    {
+        get => _accent;
+        private set
+        {
+            if (!SetProperty(ref _accent, value)) return;
+            
+            _userSettings.Accent = value;
+            _userSettings.Save();
+            _themeService.SetThemeAndAccent(Theme, value);
+        }
+    }
+    
 
     private bool _isCompact;
 
@@ -87,9 +117,11 @@ public sealed partial class MainViewModel : ObservableObject, IViewModel, IDispo
     private readonly UpdateEngine _updateEngine;
     private readonly IDialogService _dialogService;
     private readonly ISystemService _systemService;
+    private readonly IThemeService _themeService;
     private readonly Timer _shareLinkTimer = new(5000);
     
-    public MainViewModel(ILogger logger, IPlayerCommandBus commandBus, IWindowService windowService, UpdateEngine updateEngine, IDialogService dialogService, ISystemService systemService)
+    public MainViewModel(ILogger logger, IPlayerCommandBus commandBus, IWindowService windowService, UpdateEngine updateEngine, 
+        IDialogService dialogService, ISystemService systemService, IThemeService themeService)
     {
         _logger = logger;
         _commandBus = commandBus;
@@ -97,9 +129,11 @@ public sealed partial class MainViewModel : ObservableObject, IViewModel, IDispo
         _updateEngine = updateEngine;
         _dialogService = dialogService;
         _systemService = systemService;
+        _themeService = themeService;
 
         _userSettings = UserSettings.Load();
         _updateEngine.UpdateProgress += UpdateEngine_UpdateProgress;
+        SupportedAccents = _themeService.SupportedAccents;
         ApplyUserSettings();
         
         _shareLinkTimer.Elapsed += ShareLinkTimer_Elapsed;
@@ -120,6 +154,9 @@ public sealed partial class MainViewModel : ObservableObject, IViewModel, IDispo
     {
         TopMost = _userSettings.IsTopMost;
         IsCompact = _userSettings.IsCompactMode;
+        Theme = _userSettings.Theme;
+        Accent = _userSettings.Accent;
+        _themeService.SetThemeAndAccent(_userSettings.Theme, _userSettings.Accent);
     }
 
     public void PlaybackStateChanged(PlayStateMessage message)
@@ -316,6 +353,20 @@ public sealed partial class MainViewModel : ObservableObject, IViewModel, IDispo
     {
         await Task.Delay(100);
         _logger.Information("Navigation starting.");
+    }
+    
+    [RelayCommand]
+    private void ToggleTheme()
+    {
+        Theme = Theme == IThemeService.LightThemeName ? IThemeService.DarkThemeName : IThemeService.LightThemeName;
+    }
+
+    [RelayCommand]
+    private void ToggleAccent()
+    {
+        var currentAccendIndex = SupportedAccents.IndexOf(Accent);
+        var nextAccentIndex = (currentAccendIndex + 1) % SupportedAccents.Count;
+        Accent = SupportedAccents[nextAccentIndex];
     }
 
     private static bool IsDevelopmentEnvironment()

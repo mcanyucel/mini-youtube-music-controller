@@ -1,0 +1,60 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Personal\\MiniYoutubeMusicController\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{31FDD291-FEAA-40F7-A941-72B7F5B0C515}|MYMC\\MYMC.csproj|d:\\personal\\miniyoutubemusiccontroller\\mymc\\properties\\settings.settings||{6D2695F9-5365-4A78-89ED-F205C045BFE6}",
+      "RelativeMoniker": "D:0:0:{31FDD291-FEAA-40F7-A941-72B7F5B0C515}|MYMC\\MYMC.csproj|solutionrelative:mymc\\properties\\settings.settings||{6D2695F9-5365-4A78-89ED-F205C045BFE6}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{31FDD291-FEAA-40F7-A941-72B7F5B0C515}|MYMC\\MYMC.csproj|d:\\personal\\miniyoutubemusiccontroller\\mymc\\mymc.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
+      "RelativeMoniker": "D:0:0:{31FDD291-FEAA-40F7-A941-72B7F5B0C515}|MYMC\\MYMC.csproj|solutionrelative:mymc\\mymc.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Settings.settings",
+              "DocumentMoniker": "D:\\Personal\\MiniYoutubeMusicController\\MYMC\\Properties\\Settings.settings",
+              "RelativeDocumentMoniker": "MYMC\\Properties\\Settings.settings",
+              "ToolTip": "D:\\Personal\\MiniYoutubeMusicController\\MYMC\\Properties\\Settings.settings",
+              "RelativeToolTip": "MYMC\\Properties\\Settings.settings",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002767|",
+              "WhenOpened": "2025-04-16T08:35:10.901Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MYMC",
+              "DocumentMoniker": "D:\\Personal\\MiniYoutubeMusicController\\MYMC\\MYMC.csproj",
+              "RelativeDocumentMoniker": "MYMC\\MYMC.csproj",
+              "ToolTip": "D:\\Personal\\MiniYoutubeMusicController\\MYMC\\MYMC.csproj",
+              "RelativeToolTip": "MYMC\\MYMC.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-04-16T08:35:02.094Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
