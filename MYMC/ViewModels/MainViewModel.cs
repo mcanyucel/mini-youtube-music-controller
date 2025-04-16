@@ -39,7 +39,11 @@ public sealed partial class MainViewModel : ObservableObject, IViewModel, IDispo
     
     [ObservableProperty] private double _updateProgress;
     [ObservableProperty] private List<string> _supportedAccents;
-
+    [ObservableProperty] private double _startLeft;
+    [ObservableProperty] private double _startTop;
+    
+    
+    
     private bool _topMost;
     public bool TopMost
     {
@@ -156,6 +160,8 @@ public sealed partial class MainViewModel : ObservableObject, IViewModel, IDispo
         IsCompact = _userSettings.IsCompactMode;
         Theme = _userSettings.Theme;
         Accent = _userSettings.Accent;
+        StartLeft = _userSettings.Left;
+        StartTop = _userSettings.Top;
         _themeService.SetThemeAndAccent(_userSettings.Theme, _userSettings.Accent);
     }
 
@@ -294,6 +300,14 @@ public sealed partial class MainViewModel : ObservableObject, IViewModel, IDispo
         _commandBus.SendPlayerCommand(new PlayerCommandMessage(PlayerCommandType.ToggleRepeatMode));
     }
 
+    
+    public void SaveWindowLocation(double left, double top)
+    {
+        _userSettings.Left = left;
+        _userSettings.Top = top;
+        _userSettings.Save();
+    }
+
     [RelayCommand(CanExecute = nameof(IsBusyCanExecute))]
     private void ToggleShuffle()
     {
@@ -364,8 +378,8 @@ public sealed partial class MainViewModel : ObservableObject, IViewModel, IDispo
     [RelayCommand]
     private void ToggleAccent()
     {
-        var currentAccendIndex = SupportedAccents.IndexOf(Accent);
-        var nextAccentIndex = (currentAccendIndex + 1) % SupportedAccents.Count;
+        var currentAccentIndex = SupportedAccents.IndexOf(Accent);
+        var nextAccentIndex = (currentAccentIndex + 1) % SupportedAccents.Count;
         Accent = SupportedAccents[nextAccentIndex];
     }
 

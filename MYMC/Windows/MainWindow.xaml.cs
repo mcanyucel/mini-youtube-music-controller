@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Windows;
 using Microsoft.Web.WebView2.Core;
@@ -83,6 +84,11 @@ public sealed partial class MainWindow : IDisposable
     {
         await ExecuteScriptAsync("document.querySelector('button[aria-label=\"Dislike\"]')?.click();");
     }
+    
+    private void MainWindow_OnClosing(object? sender, CancelEventArgs e)
+    {
+        _viewModel?.SaveWindowLocation(Left, Top);
+    }
 
     private async Task SeekToTime(object? e)
     {
@@ -157,7 +163,14 @@ public sealed partial class MainWindow : IDisposable
     private async void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
     {
         _viewModel = (MainViewModel)DataContext;
+        UpdateWindowLocation();
         await InitializeWebView();
+    }
+
+    private void UpdateWindowLocation()
+    {
+        Left = _viewModel!.StartLeft;
+        Top = _viewModel!.StartTop;
     }
 
     private async Task InitializeWebView()

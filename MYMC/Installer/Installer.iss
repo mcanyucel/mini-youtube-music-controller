@@ -1,5 +1,5 @@
 #define MyAppName "Mini Youtube Music Controller"
-#define MyAppVersion "1.1.0.0"
+#define MyAppVersion "1.1.1.0"
 #define MyAppPublisher "Mustafa Can Yucel"
 #define MyAppExeName "MYMC.exe"
 

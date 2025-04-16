@@ -9,8 +9,12 @@
                  xmlns:converters="clr-namespace:MYMC.Converters"
                  xmlns:iconpacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                  d:DataContext="{d:DesignInstance Type=viewmodel:MainViewModel}"
+                 WindowStartupLocation="Manual"
+                 Left="{Binding StartLeft}"
+                 Top="{Binding StartTop}"
                  xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
                  Loaded="MainWindow_OnLoaded"
+                 Closing="MainWindow_OnClosing"
                  Topmost="{Binding TopMost}"
                  mc:Ignorable="d"
                  Title="Youtube Music" Height="132" Width="594">
