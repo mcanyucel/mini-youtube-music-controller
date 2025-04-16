@@ -13,6 +13,14 @@ A lightweight desktop controller for YouTube Music built with .NET 9.0 and WPF, 
 - Always-on-top option
 - Track progress bar with seeking
 - Persistent user settings
+- Dark and light themes
+- Customizable theme colors from 23 preset options
+
+## Screenshots
+Dark Theme (Purple) | Light Theme (Blue)
+
+![sc01](screenshots/sc01.png)
+![sc02](screenshots/sc02.png)
 
 ## Requirements
 
