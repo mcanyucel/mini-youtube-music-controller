@@ -81,6 +81,12 @@ public static class ServiceProviderExtensions
         return services;
     }
     
+    public static ServiceCollection ConfigureThemeServices(this ServiceCollection services)
+    {
+        services.AddSingleton<IThemeService, MahappsThemeService>();
+        return services;
+    }
+    
     public static ServiceCollection AddUpdateServices(this ServiceCollection services)
     {
         services.AddSingleton<UpdateEngine>();
